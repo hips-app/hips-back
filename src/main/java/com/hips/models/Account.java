@@ -1,5 +1,5 @@
 
-package com.mycompany.hips.back;
+package com.hips.models;
 
 import java.io.*;
 import java.util.*;
