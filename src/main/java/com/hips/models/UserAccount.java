@@ -1,31 +1,34 @@
 
 package com.hips.models;
 
-import java.util.Date;
+import java.util.*;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class accountTokenWhithelist {
+public class UserAccount {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
     int account;
-    String token;
+    int type;
+    boolean autoRenewSubscription;
     boolean isActive;
     Date createdAt;
     Date updatedAt;
 
-    public accountTokenWhithelist() {
+    public UserAccount() {
     }
 
-    public accountTokenWhithelist(int id, int account, String token, boolean isActive, Date createdAt, Date updatedAt) {
+    public UserAccount(int id, int account, int type, boolean autoRenewSubscription,
+            boolean isActive, Date createdAt, Date updatedAt) {
         this.id = id;
         this.account = account;
-        this.token = token;
+        this.type = type;
+        this.autoRenewSubscription = autoRenewSubscription;
         this.isActive = isActive;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -47,12 +50,20 @@ public class accountTokenWhithelist {
         this.account = account;
     }
 
-    public String getToken() {
-        return token;
+    public int getType() {
+        return type;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public boolean isAutoRenewSubscription() {
+        return autoRenewSubscription;
+    }
+
+    public void setAutoRenewSubscription(boolean autoRenewSubscription) {
+        this.autoRenewSubscription = autoRenewSubscription;
     }
 
     public boolean isIsActive() {
@@ -81,9 +92,9 @@ public class accountTokenWhithelist {
 
     @Override
     public String toString() {
-        return "accountTokenWhithelist{" + "id=" + id + ", account=" + account +
-                ", token=" + token + ", isActive=" + isActive + ", createdAt=" +
-                createdAt + ", updatedAt=" + updatedAt + '}';
+        return "userAccount{" + "id=" + id + ", account=" + account + ", type="
+                + type + ", autoRenewSubscription=" + autoRenewSubscription + 
+                ", isActive=" + isActive + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
     }
     
     

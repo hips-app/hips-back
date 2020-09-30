@@ -1,34 +1,31 @@
 
 package com.hips.models;
 
-import java.util.*;
+import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class userAccount {
+public class AccountTokenWhithelist {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
     int account;
-    int type;
-    boolean autoRenewSubscription;
+    String token;
     boolean isActive;
     Date createdAt;
     Date updatedAt;
 
-    public userAccount() {
+    public AccountTokenWhithelist() {
     }
 
-    public userAccount(int id, int account, int type, boolean autoRenewSubscription,
-            boolean isActive, Date createdAt, Date updatedAt) {
+    public AccountTokenWhithelist(int id, int account, String token, boolean isActive, Date createdAt, Date updatedAt) {
         this.id = id;
         this.account = account;
-        this.type = type;
-        this.autoRenewSubscription = autoRenewSubscription;
+        this.token = token;
         this.isActive = isActive;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -50,20 +47,12 @@ public class userAccount {
         this.account = account;
     }
 
-    public int getType() {
-        return type;
+    public String getToken() {
+        return token;
     }
 
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public boolean isAutoRenewSubscription() {
-        return autoRenewSubscription;
-    }
-
-    public void setAutoRenewSubscription(boolean autoRenewSubscription) {
-        this.autoRenewSubscription = autoRenewSubscription;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public boolean isIsActive() {
@@ -92,9 +81,9 @@ public class userAccount {
 
     @Override
     public String toString() {
-        return "userAccount{" + "id=" + id + ", account=" + account + ", type="
-                + type + ", autoRenewSubscription=" + autoRenewSubscription + 
-                ", isActive=" + isActive + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+        return "accountTokenWhithelist{" + "id=" + id + ", account=" + account +
+                ", token=" + token + ", isActive=" + isActive + ", createdAt=" +
+                createdAt + ", updatedAt=" + updatedAt + '}';
     }
     
     
