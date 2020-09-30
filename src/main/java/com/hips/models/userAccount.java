@@ -2,9 +2,16 @@
 package com.hips.models;
 
 import java.util.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
+@Entity
 public class userAccount {
-    
+
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
     int account;
     int type;
