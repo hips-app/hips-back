@@ -21,7 +21,7 @@ public abstract class Auditable implements Serializable {
     @LastModifiedDate
     private Date updatedAt;
 
-    @Column(columnDefinition = "bit default 1 not null")
+    @Column(columnDefinition = "bit default '1'::bit not null")
     private boolean isActive = true;
 
     public Date getCreatedAt() {

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "account_token_whitelist")
 public class AccountTokenWhitelist extends Auditable
         implements Serializable {
 

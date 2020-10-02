@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "account_type")
 public class AccountType extends Auditable implements Serializable {
 
     @Id
