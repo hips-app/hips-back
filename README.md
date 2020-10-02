@@ -1,5 +1,5 @@
 # hips-back
-Back end for the excercise/diet tracking webapp 'Hips'.
+Back end for the exercise/diet tracking webapp 'Hips'.
 
 To install and run this application:
  ##### Ensure you have installed the `jdk` at version 11 or higher.
@@ -20,10 +20,44 @@ Apache Maven 3.6.3 (cecedd...somehash)
 ...
 ```
 ##### Set the `JAVA_HOME` environment variable
-#
-Set it to the location of your `jdk` instalation. Echo it to ensure it is set properly.
+
+Set it to the location of your `jdk` installation. Echo it to ensure it is set properly.
+##### Ensure you have PostgreSQL installed 
+```sh
+$ psql --version
+psql (PostgreSQL) 10.14
+```
+##### Create the database and credentials for the app
+
+Enter the PostgreSQL shell using the default superuser
+```sh
+$ psql -U postgres
+```
+Use the password you set during the installation, and don't forget to end your statements with semicolons.
+```sh
+Password for the user postgres:
+postgres#= CREATE USER username;
+CREATE ROLE
+postgres#= alter user username with encrypted password 'example_password';
+ALTER ROLE
+postgres#= create database dbname;
+CREATE DATABASE
+postgres#= grant all privileges on database dbname to username;
+GRANT
+postgres#= \q
+$
+```
+##### Set appropriate env variables for the credentials you just created
+
+Set the environment variables to their respective values:
+- `HIPS_DB_NAME` => The name of the database
+- `HIPS_DB_USERNAME` => The name of the user in charge of the db
+- `HIPS_DB_PASSWORD` => The password for the user
+
+You might need to reboot your computer for the variables to properly "take hold".
+
 ##### Clone this repository
-#
+
 ```sh
 $ git clone https://github.com/hips-app/hips-back
 ```
@@ -32,7 +66,7 @@ The option `install` is one of many available for this wrapper
 ```sh
 $ mvnw install
 ```
-If you need to retry this instalation for some reason, use the `clean` option before `install`, to ensure you're trying from scratch:
+If you need to retry this installation for some reason, use the `clean` option before `install`, to ensure you're trying from scratch:
 ```sh
 $ mvnw clean install
 ```
