@@ -1,48 +1,39 @@
-
-package com.hips.models;
+package com.hips.api.models;
 
 import java.io.*;
-import java.util.*;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 
 @Entity
-public class Account implements Serializable {
+public class Account extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
+    @Column(length = 100)
     String uid;
-    int type;
+    @ManyToOne(fetch = FetchType.LAZY)
+    AccountType type;
+    @Column(length = 100)
     String email;
+    @Column(length = 100)
     String firstName;
+    @Column(length = 100)
     String lastName;
-    File profilePicture;
-    boolean isActive;
-    Date createdAt;
-    Date updatedAt;
+    @Column(columnDefinition = "TEXT")
+    String profilePicture;
 
     public Account() {
     }
-    
-    
 
-    public Account(int id, String uid, int type, String email, String firstName,
-            String lastName, File profilePicture, boolean isActive, Date createdAt,
-            Date updatedAt) {
-        this.id = id;
+    public Account(String uid, AccountType type, String email, String firstName,
+            String lastName, String profilePicture) {
         this.uid = uid;
         this.type = type;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.profilePicture = profilePicture;
-        this.isActive = isActive;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 
     public int getId() {
@@ -61,11 +52,11 @@ public class Account implements Serializable {
         this.uid = uid;
     }
 
-    public int getType() {
+    public AccountType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(AccountType type) {
         this.type = type;
     }
 
@@ -93,36 +84,12 @@ public class Account implements Serializable {
         this.lastName = lastName;
     }
 
-    public File getProfilePicture() {
+    public String getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(File profilePicture) {
+    public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
-    }
-
-    public boolean isIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
     }
 
     @Override
@@ -130,9 +97,6 @@ public class Account implements Serializable {
         return "Account{" + "id=" + id + ", uid=" + uid + ", type=" + type + 
                 ", email=" + email + ", firstName=" + firstName + ", lastName=" 
                 + lastName + ", profilePicture=" + profilePicture + ", isActive="
-                + isActive + ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + '}';
+                + this.isActive() + ", createdAt=" + this.getCreatedAt() + ", updatedAt=" + this.getUpdatedAt() + '}';
     }
-    
-    
-    
 }
