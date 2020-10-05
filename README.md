@@ -56,6 +56,11 @@ Set the environment variables to their respective values:
 
 You might need to reboot your computer for the variables to properly "take hold".
 
+##### Put the secret for the JWTs in the environment
+
+Create (yet another) environment variable with the name `JWT_SECRET`.
+The value of this variable will be used for the cryptographical signing of authentication tokens.
+
 ##### Clone this repository
 
 ```sh
@@ -84,4 +89,6 @@ Use the following
 ```sh
 $ mvn spring-boot:run
 ```
-After the output stops, go to `localhost:8080` to be greeted by the app.
+After the output stops, go to `localhost:8080` you can start testing the API, using the following endpoints:
+
+- `POST` to `/signup` => Expects JSON object with fields `firstname`, `lastname`, `email`, `password` (all `string`s). Given that the email hasn't been used to create a user before, one will be created. For a `200 OK` response, the body is a JWT for authentication.
