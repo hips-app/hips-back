@@ -11,11 +11,11 @@ public class Account extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     String uid;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     AccountType type;
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     String email;
     @Column(length = 100)
     String firstName;
