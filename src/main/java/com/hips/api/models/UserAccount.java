@@ -10,19 +10,19 @@ public class UserAccount extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     Account account;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     UserType type;
-    boolean autoRenewSubscription;
+
+    boolean autoRenewSubscription = false;
 
     public UserAccount() {
     }
 
-    public UserAccount(Account account, UserType type, boolean autoRenewSubscription) {
+    public UserAccount(Account account, UserType type) {
         this.account = account;
         this.type = type;
-        this.autoRenewSubscription = autoRenewSubscription;
     }
 
     public int getId() {
