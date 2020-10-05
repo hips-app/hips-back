@@ -1,8 +1,10 @@
 package com.hips.api.controllers;
 
 import com.hips.api.models.Account;
+import com.hips.api.models.AccountTokenWhitelist;
 import com.hips.api.models.AccountType;
 import com.hips.api.models.UserAccount;
+import com.hips.api.repositories.AccountTokenWhitelistRepository;
 import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
 
@@ -31,6 +33,9 @@ public class UserAccountController {
 
     @Autowired
     private AccountTypeRepository accountTypeRepository;
+
+    @Autowired
+    private AccountTokenWhitelistRepository tokenRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody HashMap<String, String> req){
@@ -62,6 +67,8 @@ public class UserAccountController {
         }
 
         String token = createJWT(1000 * 60 * 2);
+
+        tokenRepository.save(new AccountTokenWhitelist(account, token));
 
         return new ResponseEntity<String>(token, HttpStatus.OK);
     }
