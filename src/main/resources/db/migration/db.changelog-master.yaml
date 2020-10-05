@@ -1,4 +1,3 @@
 databaseChangeLog:
-  _xmlns: "http://www.liquibase.org/xml/ns/dbchangelog"
-  "_xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
-  "_xsi:schemaLocation": "http://www.liquibase.org/xml/ns/dbchangelog
+  - include:
+      file: /db/migration/empty.changelog.xml
