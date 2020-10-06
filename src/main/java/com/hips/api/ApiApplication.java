@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @EnableAutoConfiguration
-@EnableJpaAuditing
 @SpringBootApplication
 public class ApiApplication {
 

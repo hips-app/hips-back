@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+    <changeSet author="ccgarciab" id="1601959310097-1">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-2">
+        <createTable tableName="account">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(100)"/>
+            <column name="first_name" type="VARCHAR(100)"/>
+            <column name="last_name" type="VARCHAR(100)"/>
+            <column name="password" type="TEXT"/>
+            <column name="profile_picture" type="TEXT"/>
+            <column name="uid" type="VARCHAR(100)"/>
+            <column name="type_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-3">
+        <createTable tableName="account_token_whitelist">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-4">
+        <createTable tableName="account_type">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-5">
+        <createTable tableName="user_account">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="auto_renew_subscription" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_id" type="INT"/>
+            <column name="type_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-6">
+        <createTable tableName="user_type">
+            <column name="id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP(6) WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-7">
+        <addPrimaryKey columnNames="id" constraintName="account_pkey" tableName="account"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-8">
+        <addPrimaryKey columnNames="id" constraintName="account_token_whitelist_pkey" tableName="account_token_whitelist"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-9">
+        <addPrimaryKey columnNames="id" constraintName="account_type_pkey" tableName="account_type"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-10">
+        <addPrimaryKey columnNames="id" constraintName="user_account_pkey" tableName="user_account"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-11">
+        <addPrimaryKey columnNames="id" constraintName="user_type_pkey" tableName="user_type"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-12">
+        <addUniqueConstraint columnNames="uid" constraintName="uk_g0r31xiwjpn6bes07nsurpgh9" tableName="account"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-13">
+        <addUniqueConstraint columnNames="email" constraintName="uk_q0uja26qgu1atulenwup9rxyr" tableName="account"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-14">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="user_account" constraintName="fk1pxs5fj6ujqfs13gmfg3o5cwo" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-15">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="user_account" constraintName="fk6mlf8a3kpefto3jcdvqo0qahv" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="user_type"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-16">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="account_token_whitelist" constraintName="fk9ymy7sb2pt5y65qsqe4rb9rht" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="account"/>
+    </changeSet>
+    <changeSet author="ccgarciab" id="1601959310097-17">
+        <addForeignKeyConstraint baseColumnNames="type_id" baseTableName="account" constraintName="fkdcu5rtsdgc9h8a2gflrojfdy9" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="account_type"/>
+    </changeSet>
+</databaseChangeLog>
