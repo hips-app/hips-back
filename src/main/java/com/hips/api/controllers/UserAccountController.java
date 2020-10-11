@@ -54,9 +54,11 @@ public class UserAccountController {
 
         List<AccountType> aType = accountTypeRepository.findByName("User");
 
-        pass = BCrypt.hashpw(pass, BCrypt.gensalt());
+        String salt = BCrypt.gensalt();
 
-        Account account = new Account(uid, aType.get(0), email, name, lastname, pass, "");
+        pass = BCrypt.hashpw(pass, salt);
+
+        Account account = new Account(uid, aType.get(0), email, name, lastname, pass, salt, "");
 
         UserAccount userAccount = new UserAccount(account, null);
 
