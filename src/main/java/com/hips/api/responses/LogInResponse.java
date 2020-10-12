@@ -1,6 +1,6 @@
 package com.hips.api.responses;
 
-import com.hips.api.models.UserAccount;
+import com.hips.api.models.Account;
 import com.hips.api.models.UserSubscription;
 
 import java.io.Serializable;
@@ -17,11 +17,11 @@ public class LogInResponse implements Serializable {
     public LogInResponse() {
     }
 
-    public LogInResponse(UserAccount account, String token) {
+    public LogInResponse(Account account, String token) {
         this.id = account.getId();
-        this.firstName = account.getAccount().getFirstName();
-        this.lastName = account.getAccount().getLastName();
-        this.email = account.getAccount().getEmail();
+        this.firstName = account.getFirstName();
+        this.lastName = account.getLastName();
+        this.email = account.getEmail();
         this.token = token;
         this.subscription = null;
     }
