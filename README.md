@@ -51,11 +51,6 @@ $
 
 Using the values given here will allow seamless usage while using the local profile of the application.
 
-##### Put the secret for the JWTs in the environment
-
-Create an environment variable with the name `JWT_SECRET`.
-The value of this variable will be used for the cryptographical signing of authentication tokens.
-
 ##### Clone this repository
 
 ```sh
@@ -94,7 +89,7 @@ Alternatively, the shorter command for the existing `maven` profile can be used:
 ```sh
 mvn spring-boot:run -Plocal
 ```
-As mentioned above this shorter version doesn't require just an appropriate `properties` file, but also a `maven` profile specified in the `pom.xml` file.
+As mentioned above this shorter version doesn't require just an appropriate `properties` file, but also a `maven` profile specified in the `pom.xml` file. The `local` profile is already provided but others must be created before being used.
 
 After the output stops, go to `localhost:8008` you can start testing the API, using the following endpoints:
 
