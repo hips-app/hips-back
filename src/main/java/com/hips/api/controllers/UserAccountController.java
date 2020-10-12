@@ -8,6 +8,7 @@ import com.hips.api.repositories.AccountTokenWhitelistRepository;
 import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
 
+import com.hips.api.responses.LogInResponse;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -38,7 +39,7 @@ public class UserAccountController {
     private AccountTokenWhitelistRepository tokenRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody HashMap<String, String> req){
+    public ResponseEntity<LogInResponse> signUp(@RequestBody HashMap<String, String> req){
 
         String uid = UUID.randomUUID().toString();
         String name, lastname, email, pass;
@@ -49,31 +50,33 @@ public class UserAccountController {
 
         if(name == null || lastname == null || email == null || pass == null){
 
-            return new ResponseEntity<String>("", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new LogInResponse(), HttpStatus.BAD_REQUEST);
         }
 
         List<AccountType> aType = accountTypeRepository.findByName("User");
 
-        pass = BCrypt.hashpw(pass, BCrypt.gensalt());
+        String salt = BCrypt.gensalt();
 
-        Account account = new Account(uid, aType.get(0), email, name, lastname, pass, "");
+        pass = BCrypt.hashpw(pass, salt);
+
+        Account account = new Account(uid, aType.get(0), email, name, lastname, pass, salt, "");
 
         UserAccount userAccount = new UserAccount(account, null);
 
         try{
-            userAccountRepository.save(userAccount);
+            userAccount = userAccountRepository.save(userAccount);
         }catch (DataIntegrityViolationException e){
-            return new ResponseEntity<String>("", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(new LogInResponse(), HttpStatus.FORBIDDEN);
         }
 
-        String token = createJWT(1000 * 60 * 2);
+        String token = createJWT(userAccount.getId() ,1000 * 60 * 2);
 
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
-        return new ResponseEntity<String>(token, HttpStatus.OK);
+        return new ResponseEntity<>(new LogInResponse(name, lastname, email, token), HttpStatus.OK);
     }
 
-    public static String createJWT(long ttlMillis) {
+    public static String createJWT(Integer id, long ttlMillis) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -85,6 +88,7 @@ public class UserAccountController {
 
         JwtBuilder builder = Jwts.builder()
                 .setIssuedAt(now)
+                .setSubject(id.toString())
                 .signWith(signatureAlgorithm, signingKey);
 
         if (ttlMillis > 0) {
