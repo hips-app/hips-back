@@ -73,7 +73,7 @@ public class UserAccountController {
 
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
-        return new ResponseEntity<>(new LogInResponse(name, lastname, email, token), HttpStatus.OK);
+        return new ResponseEntity<>(new LogInResponse(userAccount, token), HttpStatus.OK);
     }
 
     public static String createJWT(Integer id, long ttlMillis) {
