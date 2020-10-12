@@ -1,5 +1,11 @@
-service: sb-gcp # Id of the service
 env: flex       # Flex environment
 runtime: java   # Java runtime
 runtime_config:
-  jdk: openjdk11 # use OpenJDK 8
+  jdk: openjdk8 # use OpenJDK 8
+
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 2
+
+resources:
+  memory_gb: 4
