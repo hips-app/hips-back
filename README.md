@@ -34,32 +34,22 @@ Enter the PostgreSQL shell using the default superuser
 $ psql -U postgres
 ```
 Use the password you set during the installation, and don't forget to end your statements with semicolons.
+The following commands should be followed exactly to use the configuration for local environments present in the project without modification.
 ```sh
 Password for the user postgres:
 postgres#= CREATE USER username;
 CREATE ROLE
-postgres#= alter user username with encrypted password 'example_password';
+postgres#= alter user username with encrypted password 'password';
 ALTER ROLE
-postgres#= create database dbname;
+postgres#= create database hips;
 CREATE DATABASE
-postgres#= grant all privileges on database dbname to username;
+postgres#= grant all privileges on database hips to username;
 GRANT
 postgres#= \q
 $
 ```
-##### Set appropriate env variables for the credentials you just created
 
-Set the environment variables to their respective values:
-- `HIPS_DB_NAME` => The name of the database
-- `HIPS_DB_USERNAME` => The name of the user in charge of the db
-- `HIPS_DB_PASSWORD` => The password for the user
-
-You might need to reboot your computer for the variables to properly "take hold".
-
-##### Put the secret for the JWTs in the environment
-
-Create (yet another) environment variable with the name `JWT_SECRET`.
-The value of this variable will be used for the cryptographical signing of authentication tokens.
+Using the values given here will allow seamless usage while using the local profile of the application.
 
 ##### Clone this repository
 
@@ -69,13 +59,17 @@ $ git clone https://github.com/hips-app/hips-back
 ##### Use the maven wrapper script to install the dependencies
 The option `install` is one of many available for this wrapper
 ```sh
-$ mvnw install
+$ mvn install -Plocal
 ```
 If you need to retry this installation for some reason, use the `clean` option before `install`, to ensure you're trying from scratch:
 ```sh
-$ mvnw clean install
+$ mvn clean install -Plocal
 ```
-It will install dependencies and run tests. The output is verbose, but if everything is in order, it will end with something like:
+It will install dependencies and run tests under the local profile, meaning that it depends on the database being configured as shown above.
+
+The `-Plocal` parameter specifies a `maven` profile, not a `spring-boot` one, so to use this option with different profiles it would be necessary to edit the `pom.xml` file of the project to include a new profile.
+
+The output is verbose, but if everything is in order, it will end with something like:
 ```sh
 [INFO] --------------------------------------
 [INFO] BUILD SUCCESS
@@ -85,10 +79,18 @@ It will install dependencies and run tests. The output is verbose, but if everyt
 [INFO] --------------------------------------
 ```
 ##### Start the application using `maven`
-Use the following
+To start the application in the local profile, use the following command:
 ```sh
-$ mvn spring-boot:run
+$ mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
-After the output stops, go to `localhost:8080` you can start testing the API, using the following endpoints:
+This `spring-boot` profile specifies the name of the `application-{profile name}.properties` file to be loaded.
+
+Alternatively, the shorter command for the existing `maven` profile can be used:
+```sh
+mvn spring-boot:run -Plocal
+```
+As mentioned above this shorter version doesn't require just an appropriate `properties` file, but also a `maven` profile specified in the `pom.xml` file. The `local` profile is already provided but others must be created before being used.
+
+After the output stops, go to `localhost:8008` you can start testing the API, using the following endpoints:
 
 - `POST` to `/signup` => Expects JSON object with fields `firstname`, `lastname`, `email`, `password` (all `string`s). Given that the email hasn't been used to create a user before, one will be created. For a `200 OK` response, the body is a JWT for authentication.
