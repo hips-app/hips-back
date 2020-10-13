@@ -13,6 +13,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,8 @@ import java.util.*;
 @RestController
 public class UserAccountController {
 
-    private static String JWT_SECRET = System.getenv("JWT_SECRET");
+    @Value("${JWT_SECRET}")
+    private String JWT_SECRET;
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -82,6 +84,8 @@ public class UserAccountController {
 
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
+
+        System.out.println(JWT_SECRET);
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(JWT_SECRET);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
