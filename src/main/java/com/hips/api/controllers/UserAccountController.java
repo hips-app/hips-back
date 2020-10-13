@@ -67,15 +67,16 @@ public class UserAccountController {
 
         try{
             userAccount = userAccountRepository.save(userAccount);
+            account = userAccount.getAccount();
         }catch (DataIntegrityViolationException e){
             return new ResponseEntity<>(new LogInResponse(), HttpStatus.FORBIDDEN);
         }
 
-        String token = createJWT(userAccount.getId() ,1000 * 60 * 2);
+        String token = createJWT(account.getId() ,1000 * 60 * 2);
 
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
-        return new ResponseEntity<>(new LogInResponse(name, lastname, email, token), HttpStatus.OK);
+        return new ResponseEntity<>(new LogInResponse(account, token), HttpStatus.OK);
     }
 
     public static String createJWT(Integer id, long ttlMillis) {
