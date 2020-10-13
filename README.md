@@ -37,13 +37,13 @@ Use the password you set during the installation, and don't forget to end your s
 The following commands should be followed exactly to use the configuration for local environments present in the project without modification.
 ```sh
 Password for the user postgres:
-postgres#= CREATE USER username;
+postgres#= CREATE USER root;
 CREATE ROLE
-postgres#= alter user username with encrypted password 'password';
+postgres#= alter user root with encrypted password '1234';
 ALTER ROLE
 postgres#= create database hips;
 CREATE DATABASE
-postgres#= grant all privileges on database hips to username;
+postgres#= grant all privileges on database hips to root;
 GRANT
 postgres#= \q
 $
