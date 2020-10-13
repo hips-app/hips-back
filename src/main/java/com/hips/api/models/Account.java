@@ -25,12 +25,14 @@ public class Account extends Auditable implements Serializable {
     String profilePicture;
     @Column(columnDefinition = "TEXT")
     String password;
+    @Column(columnDefinition = "TEXT")
+    String salt;
 
     public Account() {
     }
 
     public Account(String uid, AccountType type, String email, String firstName,
-            String lastName, String password, String profilePicture) {
+            String lastName, String password, String salt, String profilePicture) {
         this.uid = uid;
         this.type = type;
         this.email = email;
@@ -38,6 +40,7 @@ public class Account extends Auditable implements Serializable {
         this.lastName = lastName;
         this.profilePicture = profilePicture;
         this.password = password;
+        this.salt = salt;
     }
 
     public String getPassword() {
@@ -46,6 +49,14 @@ public class Account extends Auditable implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public int getId() {
