@@ -7,6 +7,7 @@ import com.hips.api.models.UserAccount;
 import com.hips.api.repositories.AccountTokenWhitelistRepository;
 import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
+import com.hips.api.repositories.AccountRepository;
 import com.hips.api.responses.LogInResponse;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
