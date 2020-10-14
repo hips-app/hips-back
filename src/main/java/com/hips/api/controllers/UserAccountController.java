@@ -37,6 +37,9 @@ public class UserAccountController {
   @Autowired
   private AccountTokenWhitelistRepository tokenRepository;
 
+  @Autowired
+  private AccountRepository accountRepository;
+
   @PostMapping("/signup")
   public ResponseEntity<LogInResponse> signUp(
     @RequestBody HashMap<String, String> req
