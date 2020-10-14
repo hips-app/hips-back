@@ -4,6 +4,7 @@ import com.hips.api.models.Account;
 import com.hips.api.models.AccountTokenWhitelist;
 import com.hips.api.models.AccountType;
 import com.hips.api.models.UserAccount;
+import com.hips.api.repositories.AccountRepository;
 import com.hips.api.repositories.AccountTokenWhitelistRepository;
 import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +41,9 @@ public class UserAccountController {
 
     @Autowired
     private AccountTokenWhitelistRepository tokenRepository;
+
+    @Autowired
+    private AccountRepository accountRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<LogInResponse> signUp(@RequestBody HashMap<String, String> req){
@@ -77,6 +82,28 @@ public class UserAccountController {
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
         return new ResponseEntity<>(new LogInResponse(account, token), HttpStatus.OK);
+    }
+    @PatchMapping ("/login")
+    public  ResponseEntity<LogInResponse> login(@RequestBody HashMap<String, String> req)  {
+        String  email, pass;
+        email = req.get("email");
+        pass = req.get("password");
+        Account account = accountRepository.findByEmail(email);
+
+        String salt =account.getSalt();
+        pass = BCrypt.hashpw(pass, salt);
+
+        if(account == null) {
+            return new ResponseEntity<>(new LogInResponse("User or password incorrect"), HttpStatus.BAD_REQUEST);
+        }else if (account.getPassword() == pass ){
+            String token = createJWT(account.getId() ,1000 * 60 * 2);
+
+            tokenRepository.save(new AccountTokenWhitelist(account, token));
+            return new ResponseEntity<>(new LogInResponse(account,token), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new LogInResponse("User or password incorrect"), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
     public String createJWT(Integer id, long ttlMillis) {

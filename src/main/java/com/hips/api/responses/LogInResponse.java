@@ -13,8 +13,13 @@ public class LogInResponse implements Serializable {
     String email;
     String token;
     UserSubscription subscription;
+    String errorMessage;
 
     public LogInResponse() {
+    }
+
+    public LogInResponse(String errorMessage) {
+        this.errorMessage = errorMessage;
     }
 
     public LogInResponse(Account account, String token) {
