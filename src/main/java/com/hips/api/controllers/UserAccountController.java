@@ -13,6 +13,7 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,8 @@ import java.util.*;
 @RestController
 public class UserAccountController {
 
-    private static String JWT_SECRET = System.getenv("JWT_SECRET");
+    @Value("${JWT_SECRET}")
+    private String JWT_SECRET;
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -65,23 +67,26 @@ public class UserAccountController {
 
         try{
             userAccount = userAccountRepository.save(userAccount);
+            account = userAccount.getAccount();
         }catch (DataIntegrityViolationException e){
             return new ResponseEntity<>(new LogInResponse(), HttpStatus.FORBIDDEN);
         }
 
-        String token = createJWT(userAccount.getId() ,1000 * 60 * 2);
+        String token = createJWT(account.getId() ,1000 * 60 * 2);
 
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
-        return new ResponseEntity<>(new LogInResponse(name, lastname, email, token), HttpStatus.OK);
+        return new ResponseEntity<>(new LogInResponse(account, token), HttpStatus.OK);
     }
 
-    public static String createJWT(Integer id, long ttlMillis) {
+    public String createJWT(Integer id, long ttlMillis) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
+
+        System.out.println(JWT_SECRET);
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(JWT_SECRET);
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
