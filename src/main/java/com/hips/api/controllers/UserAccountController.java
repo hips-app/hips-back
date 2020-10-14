@@ -79,7 +79,7 @@ public class UserAccountController {
         return new ResponseEntity<>(new LogInResponse(account, token), HttpStatus.OK);
     }
 
-    public static String createJWT(Integer id, long ttlMillis) {
+    public String createJWT(Integer id, long ttlMillis) {
 
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
