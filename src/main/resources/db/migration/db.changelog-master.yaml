@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: /db/migration/empty.changelog.xml
+  - include:
+      file: /db/migration/2020-10-11T02-51-37.xml

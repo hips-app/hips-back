@@ -1,6 +1,6 @@
 package com.hips.api.models;
 
-import java.io.*;
+import java.io.Serializable;
 import javax.persistence.*;
 
 
@@ -11,11 +11,11 @@ public class Account extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     String uid;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     AccountType type;
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     String email;
     @Column(length = 100)
     String firstName;
@@ -23,18 +23,40 @@ public class Account extends Auditable implements Serializable {
     String lastName;
     @Column(columnDefinition = "TEXT")
     String profilePicture;
+    @Column(columnDefinition = "TEXT")
+    String password;
+    @Column(columnDefinition = "TEXT")
+    String salt;
 
     public Account() {
     }
 
     public Account(String uid, AccountType type, String email, String firstName,
-            String lastName, String profilePicture) {
+            String lastName, String password, String salt, String profilePicture) {
         this.uid = uid;
         this.type = type;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.profilePicture = profilePicture;
+        this.password = password;
+        this.salt = salt;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
     }
 
     public int getId() {
