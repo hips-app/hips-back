@@ -9,9 +9,7 @@ import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
 
 import com.hips.api.responses.LogInResponse;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -21,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
 import javax.crypto.spec.SecretKeySpec;
+import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.util.*;
@@ -77,6 +76,48 @@ public class UserAccountController {
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
         return new ResponseEntity<>(new LogInResponse(account, token), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    @Transactional
+    public ResponseEntity<Void> logOut(@RequestBody HashMap<String, Object> req){
+
+        String token = (String) req.get("token");
+        Integer bodyUserId = (Integer) req.get("id");
+
+        if(token == null || bodyUserId == null){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try{
+            Integer tokenUserId = Integer.parseInt(getJWT_Subject(token));
+            if(tokenUserId != bodyUserId || !tokenRepository.existsByToken(token)){
+                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            }
+            tokenRepository.deleteByToken(token);
+        }
+        catch (SignatureException | ExpiredJwtException jwtException){
+
+            jwtException.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    String getJWT_Subject(String token) throws SignatureException {
+
+        Claims claims = Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(JWT_SECRET))
+                .parseClaimsJws(token).getBody();
+
+        return claims.getSubject();
     }
 
     public String createJWT(Integer id, long ttlMillis) {
