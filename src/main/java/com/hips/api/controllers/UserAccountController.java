@@ -26,6 +26,7 @@ import java.security.Key;
 import java.util.*;
 
 @RestController
+@RequestMapping("/account")
 public class UserAccountController {
 
     @Value("${JWT_SECRET}")
