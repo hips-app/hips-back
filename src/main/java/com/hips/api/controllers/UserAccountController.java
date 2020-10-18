@@ -1,14 +1,9 @@
 package com.hips.api.controllers;
 
-import com.hips.api.models.Account;
-import com.hips.api.models.AccountTokenWhitelist;
-import com.hips.api.models.AccountType;
-import com.hips.api.models.UserAccount;
-import com.hips.api.repositories.AccountTokenWhitelistRepository;
-import com.hips.api.repositories.AccountTypeRepository;
-import com.hips.api.repositories.UserAccountRepository;
-import com.hips.api.repositories.AccountRepository;
+import com.hips.api.models.*;
+import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
+import com.hips.api.responses.SelectExercisesResponse;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,6 +35,9 @@ public class UserAccountController {
 
   @Autowired
   private AccountRepository accountRepository;
+
+  @Autowired
+  private PhysicalExerciseRepository physicalExerciseRepository;
 
   @PostMapping("/signup")
   public ResponseEntity<LogInResponse> signUp(
@@ -120,6 +118,21 @@ public class UserAccountController {
       new LogInResponse("Incorrect password"),
       HttpStatus.BAD_REQUEST
     );
+  }
+
+  @GetMapping("/get_physical_exercise")
+  public ResponseEntity<SelectExercisesResponse> selectExercise(
+          @RequestBody HashMap<String, String> req
+  ){
+    PhysicalExercise physicalExercise = null;
+    PhysicalExerciseType physicalExerciseType = null;
+    int physicalExerciseTypeId;
+    physicalExerciseTypeId = Integer.parseInt(req.get("physicalExerciseType"));
+
+
+    return new ResponseEntity<>(
+            new SelectExercisesResponse(physicalExercise), HttpStatus.OK );
+
   }
 
   public String createJWT(Integer id, long ttlMillis) {
