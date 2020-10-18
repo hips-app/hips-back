@@ -80,21 +80,16 @@ public class UserAccountController {
 
     @PostMapping("/logout")
     @Transactional
-    public ResponseEntity<Void> logOut(@RequestBody HashMap<String, Object> req){
+    public ResponseEntity<Void> logOut(@RequestBody HashMap<String, String> req){
 
-        String token = (String) req.get("token");
-        Integer bodyUserId = (Integer) req.get("id");
+        String token = req.get("token");
 
-        if(token == null || bodyUserId == null){
+        if(token == null){
 
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         try{
-            Integer tokenUserId = Integer.parseInt(getJWT_Subject(token));
-            if(tokenUserId != bodyUserId || !tokenRepository.existsByToken(token)){
-                return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-            }
             tokenRepository.deleteByToken(token);
         }
         catch (SignatureException | ExpiredJwtException jwtException){
