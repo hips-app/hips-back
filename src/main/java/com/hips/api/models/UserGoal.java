@@ -28,8 +28,7 @@ public class UserGoal extends Auditable implements Serializable {
     public UserGoal() {
     }
 
-    public UserGoal(int id, UserAccount userAccount, String description, Date expirationDate) {
-        this.id = id;
+    public UserGoal( UserAccount userAccount, String description, Date expirationDate) {
         this.userAccount = userAccount;
         this.description = description;
         this.expirationDate = expirationDate;

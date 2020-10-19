@@ -4,10 +4,17 @@ import com.hips.api.models.*;
 import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
 import com.hips.api.responses.SelectExercisesResponse;
+import com.hips.api.responses.UserGoalResponse;
+import com.hips.api.services.TokenAuthenticationService;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.io.IOException;
 import java.security.Key;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
@@ -38,6 +45,9 @@ public class UserAccountController {
 
   @Autowired
   private PhysicalExerciseRepository physicalExerciseRepository;
+
+  @Autowired
+  private UserGoalRepository userGoalRepository;
 
   @PostMapping("/signup")
   public ResponseEntity<LogInResponse> signUp(
@@ -133,6 +143,59 @@ public class UserAccountController {
     return new ResponseEntity<>(
             new SelectExercisesResponse(physicalExercise), HttpStatus.OK );
 
+  }
+  @PostMapping("/set_goal/{id}")
+  public ResponseEntity<UserGoalResponse> setGoal(
+          @PathVariable("id") int userId,
+          @RequestBody HashMap<String, String> req
+  ) throws ParseException {
+
+    UserAccount userAccount;
+    String description;
+    Date expirationDate;
+    String token;
+    Account account;
+    Integer tokId;
+
+    description = req.get("description");
+    expirationDate = new SimpleDateFormat("dd/MM/yyyy").parse(req.get("expiration_date"));
+    token = req.get("token");
+
+    TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService(JWT_SECRET);
+
+    if (description == null || expirationDate == null || token == null) {
+      return new ResponseEntity<>(new UserGoalResponse(), HttpStatus.BAD_REQUEST);
+    }
+
+
+    try {
+
+      tokId = Integer.parseInt(tokenAuthenticationService.getJWT_Subject(token));
+
+
+      if (!tokId.equals(userId)) {
+
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+      }
+
+    }catch(ExpiredJwtException e){
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+     }
+    account = accountRepository.findById(userId);
+
+
+    if(account.getType().getId() != 1){
+
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+    userAccount = userAccountRepository.findByAccount(account);
+    UserGoal userGoal = new UserGoal(
+            userAccount,
+            description,
+            expirationDate
+    );
+    userGoal = userGoalRepository.save(userGoal);
+    return new ResponseEntity<>(new UserGoalResponse(userGoal), HttpStatus.OK);
   }
 
   public String createJWT(Integer id, long ttlMillis) {

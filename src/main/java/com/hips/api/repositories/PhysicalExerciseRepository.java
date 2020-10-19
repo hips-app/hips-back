@@ -5,7 +5,6 @@ import com.hips.api.models.PhysicalExerciseType;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-import javax.management.PersistentMBean;
 import java.util.List;
 
 @RepositoryRestResource
