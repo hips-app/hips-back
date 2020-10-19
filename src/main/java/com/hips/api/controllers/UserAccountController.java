@@ -4,6 +4,7 @@ import com.hips.api.models.Account;
 import com.hips.api.models.AccountTokenWhitelist;
 import com.hips.api.models.AccountType;
 import com.hips.api.models.UserAccount;
+import com.hips.api.repositories.AccountRepository;
 import com.hips.api.repositories.AccountTokenWhitelistRepository;
 import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
@@ -39,6 +40,9 @@ public class UserAccountController {
     @Autowired
     private AccountTokenWhitelistRepository tokenRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @PostMapping("/signup")
     public ResponseEntity<LogInResponse> signUp(@RequestBody HashMap<String, String> req){
 
@@ -71,7 +75,7 @@ public class UserAccountController {
             return new ResponseEntity<>(new LogInResponse(), HttpStatus.FORBIDDEN);
         }
 
-        String token = createJWT(account.getId() ,1000 * 60 * 2);
+        String token = createJWT(account.getId() ,1000 * 60 * 60 * 2);
 
         tokenRepository.save(new AccountTokenWhitelist(account, token));
 
@@ -102,6 +106,51 @@ public class UserAccountController {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/personal/{id}")
+    @Transactional
+    public ResponseEntity<Void> registerPersonalInfo(@PathVariable("id") int userId, @RequestBody HashMap<String, String> request){
+
+        String token = request.get("token");
+
+        if(token == null){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try{
+
+            Integer tokId = Integer.parseInt(getJWT_Subject(token));
+
+            if(!tokId.equals(userId)){
+
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Account account = accountRepository.getById(userId);
+
+        if(account.getType().getId() != 1){
+
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        String firstName = request.get("firstname");
+        String lastName = request.get("lastname");
+        String email = request.get("email");
+
+        if(firstName != null) account.setFirstName(firstName);
+        if(lastName != null) account.setLastName(lastName);
+        if(email != null) account.setEmail(email);
+
+        accountRepository.save(account);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
