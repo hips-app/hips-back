@@ -10,4 +10,5 @@ import java.util.Optional;
 @RepositoryRestResource
 public interface UserAccountRepository extends CrudRepository<UserAccount, Integer>{
     UserAccount findByAccount(Account account);
+    UserAccount getByAccountId(Integer id);
 }

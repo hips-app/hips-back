@@ -6,12 +6,8 @@ import com.hips.api.responses.LogInResponse;
 import com.hips.api.responses.SelectExercisesResponse;
 import com.hips.api.responses.UserGoalResponse;
 import com.hips.api.services.TokenAuthenticationService;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 
-import java.io.IOException;
 import java.security.Key;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +22,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+
 @RestController
 public class UserAccountController {
   @Value("${JWT_SECRET}")
@@ -33,6 +31,8 @@ public class UserAccountController {
 
   @Autowired
   private UserAccountRepository userAccountRepository;
+    @Autowired
+    private UserMedicalDataRepository userMedicalDataRepository;
 
   @Autowired
   private AccountTypeRepository accountTypeRepository;
@@ -43,11 +43,13 @@ public class UserAccountController {
   @Autowired
   private AccountRepository accountRepository;
 
-  @Autowired
-  private PhysicalExerciseRepository physicalExerciseRepository;
+ // @Autowired
+ // private PhysicalExerciseRepository physicalExerciseRepository;
 
   @Autowired
   private UserGoalRepository userGoalRepository;
+
+  TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
   @PostMapping("/signup")
   public ResponseEntity<LogInResponse> signUp(
@@ -117,7 +119,7 @@ public class UserAccountController {
       );
     }
     if (BCrypt.checkpw(password, account.getPassword())) {
-      String token = createJWT(account.getId(), 1000 * 60 * 2);
+      String token = createJWT(account.getId(), 1000 * 60 * 60 * 2);
       tokenRepository.save(new AccountTokenWhitelist(account, token));
       return new ResponseEntity<>(
         new LogInResponse(account, token),
@@ -130,20 +132,20 @@ public class UserAccountController {
     );
   }
 
-  @GetMapping("/get_physical_exercise")
-  public ResponseEntity<SelectExercisesResponse> selectExercise(
-          @RequestBody HashMap<String, String> req
-  ){
-    PhysicalExercise physicalExercise = null;
-    PhysicalExerciseType physicalExerciseType = null;
-    int physicalExerciseTypeId;
-    physicalExerciseTypeId = Integer.parseInt(req.get("physicalExerciseType"));
+ // @GetMapping("/get_physical_exercise")
+ // public ResponseEntity<SelectExercisesResponse> selectExercise(
+ //         @RequestBody HashMap<String, String> req
+ // ){
+ //   PhysicalExercise physicalExercise = null;
+ //   PhysicalExerciseType physicalExerciseType = null;
+ //   int physicalExerciseTypeId;
+ //   physicalExerciseTypeId = Integer.parseInt(req.get("physicalExerciseType"));
 
 
-    return new ResponseEntity<>(
-            new SelectExercisesResponse(physicalExercise), HttpStatus.OK );
+ //   return new ResponseEntity<>(
+ //           new SelectExercisesResponse(physicalExercise), HttpStatus.OK );
 
-  }
+ // }
   @PostMapping("/set_goal/{id}")
   public ResponseEntity<UserGoalResponse> setGoal(
           @PathVariable("id") int userId,
@@ -161,7 +163,6 @@ public class UserAccountController {
     expirationDate = new SimpleDateFormat("dd/MM/yyyy").parse(req.get("expiration_date"));
     token = req.get("token");
 
-    TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService(JWT_SECRET);
 
     if (description == null || expirationDate == null || token == null) {
       return new ResponseEntity<>(new UserGoalResponse(), HttpStatus.BAD_REQUEST);
@@ -170,7 +171,7 @@ public class UserAccountController {
 
     try {
 
-      tokId = Integer.parseInt(tokenAuthenticationService.getJWT_Subject(token));
+      tokId = Integer.parseInt(getJWT_Subject(token));
 
 
       if (!tokId.equals(userId)) {
@@ -197,6 +198,182 @@ public class UserAccountController {
     userGoal = userGoalRepository.save(userGoal);
     return new ResponseEntity<>(new UserGoalResponse(userGoal), HttpStatus.OK);
   }
+
+    @PostMapping("/logout")
+    @Transactional
+    public ResponseEntity<Void> logOut(@RequestBody HashMap<String, String> req){
+
+        String token = req.get("token");
+
+        if(token == null){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try{
+            tokenRepository.deleteByToken(token);
+        }
+        catch (SignatureException | ExpiredJwtException jwtException){
+
+            jwtException.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        catch (Exception e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/personal/{id}")
+    @Transactional
+    public ResponseEntity<Void> registerPersonalInfo(@PathVariable("id") int userId, @RequestBody HashMap<String, String> request){
+
+        String token = request.get("token");
+
+        if(token == null){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        try{
+
+            Integer tokId = Integer.parseInt(getJWT_Subject(token));
+
+            if(!tokId.equals(userId)){
+
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Account account = accountRepository.getById(userId);
+
+        if(account.getType().getId() != 1){
+
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        String firstName = request.get("firstname");
+        String lastName = request.get("lastname");
+        String email = request.get("email");
+
+        if(firstName != null) account.setFirstName(firstName);
+        if(lastName != null) account.setLastName(lastName);
+        if(email != null) account.setEmail(email);
+
+        accountRepository.save(account);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/personal-update/{id}")
+    @Transactional
+    public ResponseEntity<Void> updatePersonalInfo(@PathVariable("id") int userId, @RequestBody HashMap<String, String>req){
+
+        String token = req.get("token");
+
+        if(token == null){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try{
+
+            Integer tokId = Integer.parseInt(getJWT_Subject(token));
+
+            if(!tokId.equals(userId)){
+
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Account account = accountRepository.getById(userId);
+        UserAccount userAccount = userAccountRepository.getByAccountId(userId);
+        int userAccountId= userAccount.getId();
+        UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(userAccountId);
+
+        if(account.getType().getId() != 1){
+
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        String firstName = req.get("firstname");
+        String lastName = req.get("lastname");
+        int heightInCentimeters = Integer.parseInt(req.get("heightInCentimeters"));
+        int weightInKilograms = Integer.parseInt(req.get("weightInKilograms"));
+
+        if (firstName != null && lastName != null && heightInCentimeters!=0 && weightInKilograms!=0) {
+            if (firstName != account.getFirstName()) {
+                account.setFirstName(firstName);
+            }
+            if (lastName != account.getLastName()) {
+                account.setLastName(lastName);
+            }
+            if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
+                userMedicalData.setHeightInCentimeters(heightInCentimeters);
+            }
+            if (weightInKilograms != userMedicalData.getWeightInKilograms()) {
+                userMedicalData.setWeightInKilograms(weightInKilograms);
+            }
+        }
+        accountRepository.save(account);
+        userMedicalDataRepository.save(userMedicalData);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/medical-data/{id}")
+    public ResponseEntity<Void> registerMedicalData (@PathVariable ("id") int userId, @RequestBody HashMap< String,String> req ){
+        String token= req.get("token");
+        if (token==null) {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Integer tokId= Integer.parseInt(getJWT_Subject(token));
+            if(!tokId.equals(userId)){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        UserAccount user= userAccountRepository.getByAccountId(userId);
+
+        String birthDay=req.get("birthDay");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date=null;
+            try {
+                date = dateFormat.parse(birthDay);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        String heightInCentimeters=req.get("heightInCentimeters");
+        String weightInKilograms= req.get("weightInKilograms");
+
+        UserMedicalData medicaldata= new UserMedicalData(user, date, Integer.parseInt(heightInCentimeters),Integer.parseInt(weightInKilograms));
+
+        userMedicalDataRepository.save(medicaldata);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    String getJWT_Subject(String token) throws SignatureException {
+
+            Claims claims = Jwts.parser()
+                    .setSigningKey(DatatypeConverter.parseBase64Binary(JWT_SECRET))
+                    .parseClaimsJws(token).getBody();
+
+            return claims.getSubject();
+        }
 
   public String createJWT(Integer id, long ttlMillis) {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
