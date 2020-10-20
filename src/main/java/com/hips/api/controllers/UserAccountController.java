@@ -4,13 +4,15 @@ import com.hips.api.models.Account;
 import com.hips.api.models.AccountTokenWhitelist;
 import com.hips.api.models.AccountType;
 import com.hips.api.models.UserAccount;
+import com.hips.api.models.UserMedicalData;
 import com.hips.api.repositories.AccountRepository;
 import com.hips.api.repositories.AccountTokenWhitelistRepository;
 import com.hips.api.repositories.AccountTypeRepository;
 import com.hips.api.repositories.UserAccountRepository;
-
+import com.hips.api.repositories.UserMedicalDataRepository;
 import com.hips.api.responses.LogInResponse;
 import io.jsonwebtoken.*;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -23,6 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
@@ -42,6 +45,9 @@ public class UserAccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private UserMedicalDataRepository userMedicalDataRepository;
 
     @PostMapping("/signup")
     public ResponseEntity<LogInResponse> signUp(@RequestBody HashMap<String, String> req){
@@ -151,6 +157,42 @@ public class UserAccountController {
         if(email != null) account.setEmail(email);
 
         accountRepository.save(account);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/medical-data/{id}")
+    public ResponseEntity<Void> registerMedicalData (@PathVariable ("id") int userId, @RequestBody HashMap< String,String> req ){
+        String token= req.get("token");
+        if (token==null) {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Integer tokId= Integer.parseInt(getJWT_Subject(token));
+            if(!tokId.equals(userId)){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        UserAccount user= userAccountRepository.getByAccountId(userId);
+
+        String birthDay=req.get("birthDay");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date=null;
+            try {
+                date = dateFormat.parse(birthDay);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        String heightInCentimeters=req.get("heightInCentimeters");
+        String weightInKilograms= req.get("weightInKilograms");
+
+        UserMedicalData medicaldata= new UserMedicalData(user, date, Integer.parseInt(heightInCentimeters),Integer.parseInt(weightInKilograms));
+
+        userMedicalDataRepository.save(medicaldata);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

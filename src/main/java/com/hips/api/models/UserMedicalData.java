@@ -14,15 +14,17 @@ import javax.persistence.*;
 public class UserMedicalData extends Auditable implements Serializable{
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
+   // @JoinColumn(name = "id_user_account")
     UserAccount owner;
-    @Column()
+    @Column(name = "birth_day")
     Date birthDay;
-    @Column(length = 100)
+    @Column(name = "height_in_centimeters",length = 100)
     int heightInCentimeters;
-    @Column(length = 100)
+    @Column(name = "weight_in_kilograms",length = 100)
     int weightInKilograms;
 
     public UserMedicalData() {
