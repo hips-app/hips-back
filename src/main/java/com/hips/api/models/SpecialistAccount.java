@@ -12,7 +12,7 @@ public class SpecialistAccount extends Auditable implements Serializable {
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.LAZY)
     SpecialistType type;
     @Column(length = 100)
     String documentNumber;
@@ -20,6 +20,13 @@ public class SpecialistAccount extends Auditable implements Serializable {
     String description;
 
     public SpecialistAccount() {
+    }
+
+    public SpecialistAccount(Account account, SpecialistType type, String documentNumber, String description) {
+        this.account = account;
+        this.type = type;
+        this.documentNumber = documentNumber;
+        this.description = description;
     }
 
     public int getId() {

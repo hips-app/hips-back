@@ -16,6 +16,10 @@ public class SpecialistType extends Auditable implements Serializable {
     public SpecialistType() {
     }
 
+    public SpecialistType(String name) {
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
