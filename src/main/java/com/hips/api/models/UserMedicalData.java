@@ -18,8 +18,7 @@ public class UserMedicalData extends Auditable implements Serializable{
     @GeneratedValue(strategy=GenerationType.AUTO)
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
-   // @JoinColumn(name = "id_user_account")
-    UserAccount owner;
+    UserAccount userAccount;
     @Column(name = "birth_day")
     Date birthDay;
     @Column(name = "height_in_centimeters",length = 100)
@@ -32,16 +31,16 @@ public class UserMedicalData extends Auditable implements Serializable{
     }
 
     public UserMedicalData(UserAccount owner,Date birthDay, int heightInCentimeters, int weightInKilograms) {
-        this.owner=owner;
+        this.userAccount=owner;
         this.birthDay=birthDay;
         this.heightInCentimeters=heightInCentimeters;
         this.weightInKilograms=weightInKilograms;
     }
     public UserAccount getOwner() {
-        return owner;
+        return userAccount;
     }
     public void setOwner(UserAccount owner) {
-        this.owner = owner;
+        this.userAccount = owner;
     }
     public Date getBirthDay() {
         return birthDay;
@@ -63,7 +62,7 @@ public class UserMedicalData extends Auditable implements Serializable{
     }
     @Override
     public String toString() {
-       return "UserMedicalData{" + "id" + this.id + "owner" + this.owner + "birthDay"
+       return "UserMedicalData{" + "id" + this.id + "owner" + this.userAccount + "birthDay"
            + this.birthDay + "heightInCentimeters" + this.heightInCentimeters
            + "weightInKilograms" + this.weightInKilograms +'}';
     }

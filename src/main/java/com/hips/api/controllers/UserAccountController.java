@@ -159,6 +159,64 @@ public class UserAccountController {
         accountRepository.save(account);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @PostMapping("/personal-update/{id}")
+    @Transactional
+    public ResponseEntity<Void> updatePersonalInfo(@PathVariable("id") int userId, @RequestBody HashMap<String, String>req){
+
+        String token = req.get("token");
+
+        if(token == null){
+
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try{
+
+            Integer tokId = Integer.parseInt(getJWT_Subject(token));
+
+            if(!tokId.equals(userId)){
+
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Account account = accountRepository.getById(userId);
+        UserAccount userAccount = userAccountRepository.getByAccountId(userId);
+        int userAccountId= userAccount.getId();
+        UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(userAccountId);
+
+        if(account.getType().getId() != 1){
+
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        String firstName = req.get("firstname");
+        String lastName = req.get("lastname");
+        int heightInCentimeters = Integer.parseInt(req.get("heightInCentimeters"));
+        int weightInKilograms = Integer.parseInt(req.get("weightInKilograms"));
+
+        if (firstName != null && lastName != null && heightInCentimeters!=0 && weightInKilograms!=0) {
+            if (firstName != account.getFirstName()) {
+                account.setFirstName(firstName);
+            }
+            if (lastName != account.getLastName()) {
+                account.setLastName(lastName);
+            }
+            if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
+                userMedicalData.setHeightInCentimeters(heightInCentimeters);
+            }
+            if (weightInKilograms != userMedicalData.getWeightInKilograms()) {
+                userMedicalData.setWeightInKilograms(weightInKilograms);
+            }
+        }
+        accountRepository.save(account);
+        userMedicalDataRepository.save(userMedicalData);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping("/medical-data/{id}")
     public ResponseEntity<Void> registerMedicalData (@PathVariable ("id") int userId, @RequestBody HashMap< String,String> req ){
