@@ -115,7 +115,7 @@ public class UserAccountController {
       account = accountRepository.findByEmail(email);
     } catch (Exception e) {
       return new ResponseEntity<>(
-        new LogInResponse("The account doesn't esist"),
+        new LogInResponse("The account doesn't exist"),
         HttpStatus.BAD_REQUEST
       );
     }
