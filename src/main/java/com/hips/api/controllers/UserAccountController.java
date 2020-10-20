@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 
 @RestController
+@RequestMapping("/account")
 public class UserAccountController {
   @Value("${JWT_SECRET}")
   private String JWT_SECRET;
