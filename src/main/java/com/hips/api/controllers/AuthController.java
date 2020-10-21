@@ -4,18 +4,11 @@ import com.hips.api.assistants.*;
 import com.hips.api.models.*;
 import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
-import com.hips.api.services.TokenAuthenticationService;
 import io.jsonwebtoken.*;
-import java.security.Key;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
-import javax.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -53,7 +46,7 @@ public class AuthController {
       String token = AuthenticationAssistant.createJWT(
         JWT_SECRET,
         account.getId(),
-        1000 * 60 * 60 * 2
+        (long)1000 * 60 * 60 * 2
       );
       tokenRepository.save(new AccountTokenWhitelist(account, token));
       return new ResponseEntity<>(
@@ -106,7 +99,7 @@ public class AuthController {
     if (account.getUid() == null) {
       account.setUid(uid);
       accountRepository.save(account);
-    } else if (account.getUid() != uid) {
+    } else if (!account.getUid().equals(uid)) {
       return new ResponseEntity<>(
         new LogInResponse("Unautorized"),
         HttpStatus.BAD_REQUEST
@@ -115,7 +108,7 @@ public class AuthController {
     String token = AuthenticationAssistant.createJWT(
       JWT_SECRET,
       account.getId(),
-      1000 * 60 * 60 * 2
+      (long)1000 * 60 * 60 * 2
     );
     tokenRepository.save(new AccountTokenWhitelist(account, token));
     return new ResponseEntity<>(
