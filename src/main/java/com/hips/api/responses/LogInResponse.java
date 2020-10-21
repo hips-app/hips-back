@@ -12,6 +12,7 @@ public class LogInResponse implements Serializable {
   String token;
   UserSubscription subscription;
   String errorMessage;
+  Integer accountType;
 
   public LogInResponse() {}
 
@@ -26,6 +27,7 @@ public class LogInResponse implements Serializable {
     this.email = account.getEmail();
     this.token = token;
     this.subscription = null;
+    this.accountType = account.getType().getId();
   }
 
   public Integer getId() {
@@ -34,6 +36,14 @@ public class LogInResponse implements Serializable {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public Integer getAccountType() {
+    return accountType;
+  }
+
+  public void setAccountType(Integer accountType) {
+    this.accountType = accountType;
   }
 
   public String getFirstName() {

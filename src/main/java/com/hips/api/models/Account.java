@@ -13,7 +13,7 @@ public class Account extends Auditable implements Serializable {
     int id;
     @Column(length = 100, unique = true)
     String uid;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @ManyToOne(fetch = FetchType.LAZY)
     AccountType type;
     @Column(length = 100, unique = true)
     String email;
