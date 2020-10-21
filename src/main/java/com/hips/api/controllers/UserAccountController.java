@@ -3,7 +3,6 @@ package com.hips.api.controllers;
 import com.hips.api.models.*;
 import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
-import com.hips.api.responses.SelectExercisesResponse;
 import com.hips.api.responses.UserGoalResponse;
 import com.hips.api.services.TokenAuthenticationService;
 import io.jsonwebtoken.*;
@@ -44,24 +43,31 @@ public class UserAccountController {
   @Autowired
   private AccountRepository accountRepository;
 
- // @Autowired
- // private PhysicalExerciseRepository physicalExerciseRepository;
-
   @Autowired
   private UserGoalRepository userGoalRepository;
 
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
+  static final String firstnameF="firstname";
+  static final String lastnameF="lastname";
+  static final String emailF="email";
+  static final String passwordF="password";
+  static final String tokenF="token";
+
+
   @PostMapping("/signup")
   public ResponseEntity<LogInResponse> signUp(
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
     String uid = UUID.randomUUID().toString();
-    String name, lastname, email, pass;
-    name = req.get("firstname");
-    lastname = req.get("lastname");
-    email = req.get("email");
-    pass = req.get("password");
+    String name;
+    String lastname;
+    String email;
+    String pass;
+    name = req.get(firstnameF);
+    lastname = req.get(lastnameF);
+    email = req.get(emailF);
+    pass = req.get(passwordF);
 
     if (name == null || lastname == null || email == null || pass == null) {
       return new ResponseEntity<>(new LogInResponse(), HttpStatus.BAD_REQUEST);
@@ -93,7 +99,7 @@ public class UserAccountController {
       return new ResponseEntity<>(new LogInResponse(), HttpStatus.FORBIDDEN);
     }
 
-    String token = createJWT(account.getId(), 1000 * 60 * 2);
+    String token = createJWT(account.getId(),(long) 1000 * 60 * 60 * 2);
 
     tokenRepository.save(new AccountTokenWhitelist(account, token));
 
@@ -105,11 +111,12 @@ public class UserAccountController {
 
   @PostMapping("/login")
   public ResponseEntity<LogInResponse> login(
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
-    String email, password;
-    email = req.get("email");
-    password = req.get("password");
+    String email;
+    String password;
+    email = req.get(emailF);
+    password = req.get(passwordF);
     Account account = null;
     try {
       account = accountRepository.findByEmail(email);
@@ -120,7 +127,7 @@ public class UserAccountController {
       );
     }
     if (BCrypt.checkpw(password, account.getPassword())) {
-      String token = createJWT(account.getId(), 1000 * 60 * 60 * 2);
+      String token = createJWT(account.getId(), (long)1000 * 60 * 60 * 2);
       tokenRepository.save(new AccountTokenWhitelist(account, token));
       return new ResponseEntity<>(
         new LogInResponse(account, token),
@@ -133,24 +140,10 @@ public class UserAccountController {
     );
   }
 
- // @GetMapping("/get_physical_exercise")
- // public ResponseEntity<SelectExercisesResponse> selectExercise(
- //         @RequestBody HashMap<String, String> req
- // ){
- //   PhysicalExercise physicalExercise = null;
- //   PhysicalExerciseType physicalExerciseType = null;
- //   int physicalExerciseTypeId;
- //   physicalExerciseTypeId = Integer.parseInt(req.get("physicalExerciseType"));
-
-
- //   return new ResponseEntity<>(
- //           new SelectExercisesResponse(physicalExercise), HttpStatus.OK );
-
- // }
   @PostMapping("/set_goal/{id}")
   public ResponseEntity<UserGoalResponse> setGoal(
           @PathVariable("id") int userId,
-          @RequestBody HashMap<String, String> req
+          @RequestBody Map<String, String> req
   ) throws ParseException {
 
     UserAccount userAccount;
@@ -162,7 +155,7 @@ public class UserAccountController {
 
     description = req.get("description");
     expirationDate = new SimpleDateFormat("dd/MM/yyyy").parse(req.get("expiration_date"));
-    token = req.get("token");
+    token = req.get(tokenF);
 
 
     if (description == null || expirationDate == null || token == null) {
@@ -172,7 +165,7 @@ public class UserAccountController {
 
     try {
 
-      tokId = Integer.parseInt(getJWT_Subject(token));
+      tokId = Integer.parseInt(getJwtSubject(token));
 
 
       if (!tokId.equals(userId)) {
@@ -202,9 +195,9 @@ public class UserAccountController {
 
     @PostMapping("/logout")
     @Transactional
-    public ResponseEntity<Void> logOut(@RequestBody HashMap<String, String> req){
+    public ResponseEntity<Void> logOut(@RequestBody Map<String, String> req){
 
-        String token = req.get("token");
+        String token = req.get(tokenF);
 
         if(token == null){
 
@@ -230,9 +223,9 @@ public class UserAccountController {
 
     @PostMapping("/personal/{id}")
     @Transactional
-    public ResponseEntity<Void> registerPersonalInfo(@PathVariable("id") int userId, @RequestBody HashMap<String, String> request){
+    public ResponseEntity<Void> registerPersonalInfo(@PathVariable("id") int userId, @RequestBody Map<String, String> request){
 
-        String token = request.get("token");
+        String token = request.get(tokenF);
 
         if(token == null){
 
@@ -241,7 +234,7 @@ public class UserAccountController {
 
         try{
 
-            Integer tokId = Integer.parseInt(getJWT_Subject(token));
+            Integer tokId = Integer.parseInt(getJwtSubject(token));
 
             if(!tokId.equals(userId)){
 
@@ -260,9 +253,9 @@ public class UserAccountController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        String firstName = request.get("firstname");
-        String lastName = request.get("lastname");
-        String email = request.get("email");
+        String firstName = request.get(firstnameF);
+        String lastName = request.get(lastnameF);
+        String email = request.get(emailF);
 
         if(firstName != null) account.setFirstName(firstName);
         if(lastName != null) account.setLastName(lastName);
@@ -274,9 +267,9 @@ public class UserAccountController {
 
     @PostMapping("/personal-update/{id}")
     @Transactional
-    public ResponseEntity<Void> updatePersonalInfo(@PathVariable("id") int userId, @RequestBody HashMap<String, String>req){
+    public ResponseEntity<Void> updatePersonalInfo(@PathVariable("id") int userId, @RequestBody Map<String, String>req){
 
-        String token = req.get("token");
+        String token = req.get(tokenF);
 
         if(token == null){
 
@@ -284,7 +277,7 @@ public class UserAccountController {
         }
         try{
 
-            Integer tokId = Integer.parseInt(getJWT_Subject(token));
+            Integer tokId = Integer.parseInt(getJwtSubject(token));
 
             if(!tokId.equals(userId)){
 
@@ -306,16 +299,16 @@ public class UserAccountController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        String firstName = req.get("firstname");
-        String lastName = req.get("lastname");
+        String firstName = req.get(firstnameF);
+        String lastName = req.get(lastnameF);
         int heightInCentimeters = Integer.parseInt(req.get("heightInCentimeters"));
         int weightInKilograms = Integer.parseInt(req.get("weightInKilograms"));
 
         if (firstName != null && lastName != null && heightInCentimeters!=0 && weightInKilograms!=0) {
-            if (firstName != account.getFirstName()) {
+            if (!account.getFirstName().equals(firstName)) {
                 account.setFirstName(firstName);
             }
-            if (lastName != account.getLastName()) {
+            if (!account.getLastName().equals(lastName)) {
                 account.setLastName(lastName);
             }
             if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
@@ -332,13 +325,13 @@ public class UserAccountController {
     }
 
     @PostMapping("/medical-data/{id}")
-    public ResponseEntity<Void> registerMedicalData (@PathVariable ("id") int userId, @RequestBody HashMap< String,String> req ){
-        String token= req.get("token");
+    public ResponseEntity<Void> registerMedicalData (@PathVariable ("id") int userId, @RequestBody Map< String,String> req ){
+        String token= req.get(tokenF);
         if (token==null) {
            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         try {
-            Integer tokId= Integer.parseInt(getJWT_Subject(token));
+            Integer tokId= Integer.parseInt(getJwtSubject(token));
             if(!tokId.equals(userId)){
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
@@ -367,7 +360,7 @@ public class UserAccountController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    String getJWT_Subject(String token) throws SignatureException {
+    String getJwtSubject(String token){
 
             Claims claims = Jwts.parser()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(JWT_SECRET))
@@ -381,8 +374,6 @@ public class UserAccountController {
 
     long nowMillis = System.currentTimeMillis();
     Date now = new Date(nowMillis);
-
-    System.out.println(JWT_SECRET);
 
     byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(JWT_SECRET);
     Key signingKey = new SecretKeySpec(

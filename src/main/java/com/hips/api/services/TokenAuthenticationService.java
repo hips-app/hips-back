@@ -2,12 +2,8 @@ package com.hips.api.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureException;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.lang.String;
 import javax.xml.bind.DatatypeConverter;
 
 
@@ -18,9 +14,10 @@ public class TokenAuthenticationService {
     private String jwtSecret;
 
     public TokenAuthenticationService() {
+        //constructor vacio
     }
 
-    public String getJWT_Subject(String token) throws SignatureException {
+    public String getJwtSubject(String token) {
 
         Claims claims = Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecret))

@@ -21,6 +21,7 @@ public class DailySportPlan extends Auditable implements Serializable {
     String description;
 
     public DailySportPlan() {
+        //constructor vacio
     }
 
     public int getId() {

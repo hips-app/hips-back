@@ -117,8 +117,8 @@ public class Account extends Auditable implements Serializable {
 
     @Override
     public String toString() {
-        return "Account{" + "id=" + id + ", uid=" + uid + ", type=" + type + 
-                ", email=" + email + ", firstName=" + firstName + ", lastName=" 
+        return "Account{" + "id=" + id + ", uid=" + uid + ", type=" + type +
+                ", email=" + email + ", firstName=" + firstName + ", lastName="
                 + lastName + ", profilePicture=" + profilePicture + ", isActive="
                 + this.isActive() + ", createdAt=" + this.getCreatedAt() + ", updatedAt=" + this.getUpdatedAt() + '}';
     }

@@ -13,7 +13,7 @@ public class PhysicalExercise extends Auditable implements Serializable {
     int id;
 
     @ManyToMany (fetch = FetchType.LAZY)
-    List<PhysicalExerciseType> physicalExerciseType;
+    private List<PhysicalExerciseType> physicalExerciseType;
 
     int repetitionsAmount;
 
@@ -33,9 +33,8 @@ public class PhysicalExercise extends Auditable implements Serializable {
     public PhysicalExercise() {
     }
 
-    public PhysicalExercise(int id, List<PhysicalExerciseType> physicalExerciseType, int repetitionsAmount, int seriesAmount, int estimatedDuration, String videoUrl, String imageUrl, String description) {
+    public PhysicalExercise(List<PhysicalExerciseType> physicalExerciseType, int repetitionsAmount, int seriesAmount, int estimatedDuration, String videoUrl, String imageUrl, String description) {
 
-        this.id = id;
         this.physicalExerciseType = physicalExerciseType;
         this.repetitionsAmount = repetitionsAmount;
         this.seriesAmount = seriesAmount;

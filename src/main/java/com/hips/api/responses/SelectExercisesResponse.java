@@ -9,7 +9,7 @@ import java.util.List;
 public class SelectExercisesResponse  implements Serializable {
 
     int id;
-    List<PhysicalExerciseType> physicalExerciseType;
+    private List<PhysicalExerciseType> physicalExerciseType;
     String description;
 
     public SelectExercisesResponse() {
