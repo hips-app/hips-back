@@ -110,26 +110,15 @@ public class UserAccountController {
   }
 
   @PostMapping("/goals")
-  public ResponseEntity<UserGoalResponse> setGoal(
+  public ResponseEntity<Void> setGoal(
     @RequestHeader("Authorization") String token,
     @RequestBody HashMap<String, String> req
   )
-    throws ParseException {
-    String description;
-    Date expirationDate;
-    int accountId;
-
-    description = req.get("description");
-    expirationDate =
-      new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
-
-    if (description == null || expirationDate == null || token == null) {
-      return new ResponseEntity<>(
-        new UserGoalResponse(),
-        HttpStatus.BAD_REQUEST
-      );
+    throws Exception {
+    Integer accountId;
+    if (token == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
     try {
       accountId =
         Integer.parseInt(
@@ -138,15 +127,27 @@ public class UserAccountController {
     } catch (ExpiredJwtException e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
-    Account account = accountRepository.findById(accountId);
+    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    String description;
+    Date expirationDate;
+
+    description = req.get("description");
+    expirationDate =
+      new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
+
+    if (description == null || expirationDate == null || token == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     UserAccount userAccount = userAccountRepository.findByAccount(account);
     UserGoal userGoal = new UserGoal(userAccount, description, expirationDate);
     userGoal = userGoalRepository.save(userGoal);
-    return new ResponseEntity<>(new UserGoalResponse(userGoal), HttpStatus.OK);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
   @PatchMapping("/personal-data")
