@@ -56,7 +56,7 @@ public class ApiApplication {
 		Account account = new Account(
 				UUID.randomUUID().toString(),
 				accountType,
-				"nutri@doctor.com",
+				"s@test.com",
 				"Sportacus",
 				"Helth",
 				pass,
