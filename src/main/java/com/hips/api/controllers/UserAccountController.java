@@ -240,14 +240,14 @@ public class UserAccountController {
   @GetMapping("/{id}/profile")
   public ResponseEntity<ProfileResponse> checkProfile(
     @RequestHeader("Authorization") String token,
-    @PathVariable("id") int userId,
-    @RequestBody HashMap<String, String> req
+    @PathVariable("id") int userId
   ) {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+    Integer accountId;
     try {
-      Integer accountId = Integer.parseInt(
+      accountId = Integer.parseInt(
         AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
       );
       if (!accountId.equals(userId)) {
@@ -260,13 +260,13 @@ public class UserAccountController {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    Account account = accountRepository.getById(userId);
+    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    UserAccount userAccount = userAccountRepository.getByAccountId(userId);
+    UserAccount userAccount = userAccountRepository.getByAccountId(accountId);
     int userAccountId = userAccount.getId();
 
     UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(
