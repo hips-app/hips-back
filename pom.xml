@@ -18,6 +18,9 @@
     <description>Server side of hips app</description>
     <properties>
         <java.version>8</java.version>
+        <sonar.projectKey>hips-app_hips-back</sonar.projectKey>
+        <sonar.organization>hips-app</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     <dependencies>
         <dependency>

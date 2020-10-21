@@ -99,7 +99,7 @@ public class UserAccountController {
     String token = AuthenticationAssistant.createJWT(
       JWT_SECRET,
       account.getId(),
-      1000 * 60 * 2
+      (long)1000 * 60 * 2
     );
 
     tokenRepository.save(new AccountTokenWhitelist(account, token));
@@ -208,10 +208,10 @@ public class UserAccountController {
       weightInKilograms != 0 &&
       date != null
     ) {
-      if (firstName != account.getFirstName()) {
+      if (!account.getFirstName().equals(firstName)) {
         account.setFirstName(firstName);
       }
-      if (lastName != account.getLastName()) {
+      if (!account.getLastName().equals(lastName)) {
         account.setLastName(lastName);
       }
       accountRepository.save(account);
