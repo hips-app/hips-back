@@ -3,6 +3,7 @@ package com.hips.api.controllers;
 import com.hips.api.models.*;
 import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
+import com.hips.api.responses.ProfileResponse;
 import com.hips.api.responses.SelectExercisesResponse;
 import com.hips.api.responses.UserGoalResponse;
 import com.hips.api.services.TokenAuthenticationService;
@@ -32,8 +33,8 @@ public class UserAccountController {
 
   @Autowired
   private UserAccountRepository userAccountRepository;
-    @Autowired
-    private UserMedicalDataRepository userMedicalDataRepository;
+  @Autowired
+  private UserMedicalDataRepository userMedicalDataRepository;
 
   @Autowired
   private AccountTypeRepository accountTypeRepository;
@@ -367,7 +368,38 @@ public class UserAccountController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    String getJWT_Subject(String token) throws SignatureException {
+    @GetMapping("/{id}/profile")
+    public ResponseEntity<ProfileResponse> checkProfile (@PathVariable ("id") int userId, @RequestBody HashMap< String,String> req ) {
+        String token= req.get("token");
+        if (token==null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            Integer tokId= Integer.parseInt(getJWT_Subject(token));
+            if(!tokId.equals(userId)){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        }catch (SignatureException | NumberFormatException | ExpiredJwtException e){
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Account account = accountRepository.getById(userId);
+
+        if(account.getType().getId() != 1){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        UserAccount userAccount = userAccountRepository.getByAccountId(userId);
+        int userAccountId= userAccount.getId();
+
+        UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(userAccountId);
+        UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccountId);
+        return new ResponseEntity<>(new ProfileResponse(account,userGoal, userMedicalData), HttpStatus.OK);
+
+  }
+        String getJWT_Subject(String token) throws SignatureException {
 
             Claims claims = Jwts.parser()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(JWT_SECRET))
