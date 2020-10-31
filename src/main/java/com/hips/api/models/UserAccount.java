@@ -1,6 +1,8 @@
 package com.hips.api.models;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,11 +11,15 @@ public class UserAccount extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "user_account_id")
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     UserType type;
+
+    @OneToMany(mappedBy = "userAccount")
+    private List<UserSubscription> userSubscriptions;
 
     boolean autoRenewSubscription = false;
 
@@ -60,7 +66,7 @@ public class UserAccount extends Auditable implements Serializable {
     @Override
     public String toString() {
         return "userAccount{" + "id=" + id + ", account=" + account + ", type="
-                + type + ", autoRenewSubscription=" + autoRenewSubscription + 
+                + type + ", autoRenewSubscription=" + autoRenewSubscription +
                 ", isActive=" + this.isActive() + ", createdAt=" + this.getCreatedAt() +
                 ", updatedAt=" + this.getUpdatedAt() + '}';
     }
