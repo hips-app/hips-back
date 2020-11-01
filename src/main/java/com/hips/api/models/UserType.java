@@ -2,7 +2,6 @@ package com.hips.api.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "user_type")
@@ -10,14 +9,9 @@ public class UserType extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "user_type_id")
-    private Integer id;
-
-    @Column(name = "user_type_name")
-    private String name;
-
-    @OneToMany(mappedBy = "userType")
-    private List<UserSubscription> userSubscriptions;
+    int id;
+    @Column(length = 100)
+    String name;
 
     public UserType() {
     }

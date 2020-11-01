@@ -1,6 +1,7 @@
 package com.hips.api.models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.*;
 
@@ -13,13 +14,47 @@ public class UserSubscription extends Auditable implements Serializable {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "user_type_id")
-    private UserType userType;
+    @JoinColumn(name = "subscription_type_id")
+    private SubscriptionType subscriptionType;
 
     @ManyToOne
     @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
+    @Column(name = "user_subscription_date")
+    private Date expirationDate;
+
     public UserSubscription() {
+    }
+    public UserSubscription(Integer id,SubscriptionType subscriptionType , UserAccount userAccount, Date expirationDate) {
+        this.id= id;
+        this.subscriptionType=subscriptionType;
+        this.userAccount= userAccount;
+        this.expirationDate=expirationDate;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
+    }
+    public SubscriptionType getSubscriptionType() {
+        return subscriptionType;
+    }
+    public void setSubscriptionType(SubscriptionType subscriptionType) {
+        this.subscriptionType = subscriptionType;
+    }
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+    public void setExpirationDate(Date expirationDate) {
+        this.expirationDate = expirationDate;
     }
 }

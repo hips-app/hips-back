@@ -1,6 +1,8 @@
 package com.hips.api.models;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,6 +11,7 @@ public class SpecialistAccount extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
+    @Column(name = "specialist_account_id")
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;
@@ -18,6 +21,9 @@ public class SpecialistAccount extends Auditable implements Serializable {
     String documentNumber;
     @Column(columnDefinition = "TEXT")
     String description;
+
+    @OneToMany(mappedBy = "specialistAccount")
+    List<UserAccount> userAccounts;
 
     public SpecialistAccount() {
     }

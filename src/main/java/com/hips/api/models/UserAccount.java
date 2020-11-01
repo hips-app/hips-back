@@ -21,6 +21,10 @@ public class UserAccount extends Auditable implements Serializable {
     @OneToMany(mappedBy = "userAccount")
     private List<UserSubscription> userSubscriptions;
 
+    @ManyToOne
+    @JoinColumn(name = "specialist_account_id")
+    SpecialistAccount specialistAccount;
+
     boolean autoRenewSubscription = false;
 
     public UserAccount() {

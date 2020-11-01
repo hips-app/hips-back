@@ -5,10 +5,12 @@ import com.hips.api.models.AccountType;
 
 import com.hips.api.models.SpecialistAccount;
 import com.hips.api.models.SpecialistType;
+import com.hips.api.models.SubscriptionType;
 import com.hips.api.repositories.AccountTypeRepository;
 
 import com.hips.api.repositories.SpecialistAccountRepository;
 import com.hips.api.repositories.SpecialistTypeRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.*;
@@ -72,6 +74,11 @@ public class ApiApplication {
 		);
 
 		specialistAccountRepository.save(specialistAccount);
+
+        SubscriptionType subscriptionType = new SubscriptionType("Premium");
+
+
+
 	}
 }
 
