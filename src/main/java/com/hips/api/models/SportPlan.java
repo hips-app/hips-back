@@ -11,7 +11,8 @@ import java.util.Date;
 public class SportPlan extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     int id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -8,7 +8,8 @@ import java.io.Serializable;
 public class DailySportPlan extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     int id;
 
     @ManyToOne(fetch = FetchType.LAZY)

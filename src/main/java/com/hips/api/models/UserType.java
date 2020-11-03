@@ -8,9 +8,10 @@ import java.io.Serializable;
 public class UserType extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     int id;
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     String name;
 
     public UserType() {

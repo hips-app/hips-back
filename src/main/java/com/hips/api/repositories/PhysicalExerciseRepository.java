@@ -10,7 +10,7 @@ import java.util.List;
 @RepositoryRestResource
 public interface PhysicalExerciseRepository extends CrudRepository<PhysicalExercise, Integer> {
 
-    List<PhysicalExercise>findByPhysicalExerciseType(PhysicalExerciseType physicalExerciseType);
+    List<PhysicalExercise>findByType(PhysicalExerciseType type);
 
 }
 

@@ -60,7 +60,7 @@ public class UserAccountController {
   public ResponseEntity<LogInResponse> signup(
     @RequestBody HashMap<String, String> req
   ) {
-    String uid = UUID.randomUUID().toString();
+    String uid = null;
     String firstName, lastName, email, pass;
     firstName = req.get(PARAM_FIRST_NAME);
     lastName = req.get(PARAM_LAST_NAME);
@@ -236,7 +236,7 @@ public class UserAccountController {
 
     return new ResponseEntity<>(HttpStatus.OK);
   }
-
+  
   @GetMapping("/{id}/profile")
   public ResponseEntity<ProfileResponse> checkProfile(
     @RequestHeader("Authorization") String token,

@@ -9,7 +9,8 @@ import javax.persistence.*;
 public class Account extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     int id;
     @Column(length = 100, unique = true)
     String uid;

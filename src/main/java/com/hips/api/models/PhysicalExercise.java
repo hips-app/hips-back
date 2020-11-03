@@ -9,17 +9,15 @@ import java.util.List;
 public class PhysicalExercise extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(columnDefinition = "serial")
     int id;
 
-    @ManyToMany (fetch = FetchType.LAZY)
-    List<PhysicalExerciseType> physicalExerciseType;
+    @ManyToOne (fetch = FetchType.LAZY)
+    PhysicalExerciseType type;
 
-    int repetitionsAmount;
-
-    int seriesAmount;
-
-    int estimatedDuration;
+    @Column(length = 100)
+    String name;
 
     @Column(length = 100)
     String videoUrl;
@@ -33,13 +31,11 @@ public class PhysicalExercise extends Auditable implements Serializable {
     public PhysicalExercise() {
     }
 
-    public PhysicalExercise(int id, List<PhysicalExerciseType> physicalExerciseType, int repetitionsAmount, int seriesAmount, int estimatedDuration, String videoUrl, String imageUrl, String description) {
+    public PhysicalExercise(int id, PhysicalExerciseType type, String name, String videoUrl, String imageUrl, String description) {
 
         this.id = id;
-        this.physicalExerciseType = physicalExerciseType;
-        this.repetitionsAmount = repetitionsAmount;
-        this.seriesAmount = seriesAmount;
-        this.estimatedDuration = estimatedDuration;
+        this.type = type;
+        this.name = name;
         this.videoUrl = videoUrl;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -53,36 +49,20 @@ public class PhysicalExercise extends Auditable implements Serializable {
         this.id = id;
     }
 
-    public List<PhysicalExerciseType> getPhysicalExerciseType() {
-        return physicalExerciseType;
+    public PhysicalExerciseType getType() {
+        return type;
     }
 
-    public void setPhysicalExerciseType(List<PhysicalExerciseType> physicalExerciseType) {
-        this.physicalExerciseType = physicalExerciseType;
+    public void setType(PhysicalExerciseType type) {
+        this.type = type;
     }
 
-    public int getRepetitionsAmount() {
-        return repetitionsAmount;
+    public String getName() {
+        return name;
     }
 
-    public void setRepetitionsAmount(int repetitionsAmount) {
-        this.repetitionsAmount = repetitionsAmount;
-    }
-
-    public int getSeriesAmount() {
-        return seriesAmount;
-    }
-
-    public void setSeriesAmount(int seriesAmount) {
-        this.seriesAmount = seriesAmount;
-    }
-
-    public int getEstimatedDuration() {
-        return estimatedDuration;
-    }
-
-    public void setEstimatedDuration(int estimatedDuration) {
-        this.estimatedDuration = estimatedDuration;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getVideoUrl() {
@@ -113,10 +93,8 @@ public class PhysicalExercise extends Auditable implements Serializable {
     public String toString() {
         return "PhysicalExercise{" +
                 "id=" + id +
-                ", physicalExerciseType=" + physicalExerciseType +
-                ", repetitionsAmount=" + repetitionsAmount +
-                ", seriesAmount=" + seriesAmount +
-                ", estimatedDuration=" + estimatedDuration +
+                ", physicalExerciseType=" + type +
+                ", name=" + name +
                 ", videoUrl='" + videoUrl + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", description='" + description + '\'' +
