@@ -1,30 +1,30 @@
-INSERT INTO "account_type"
+INSERT INTO account_type
     (name, is_active, created_at, updated_at)
 VALUES
     ('user', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('specialist', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
-INSERT INTO "specialist_type"
+INSERT INTO specialist_type
     (name, is_active, created_at, updated_at)
 VALUES
     ('nutritionist', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('coach', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
-INSERT INTO "account"
+INSERT INTO account
     (type_id, email, first_name, last_name, password, salt, is_active, created_at, updated_at)
 VALUES
     (2, 's@test.com', 'Sportacus', 'Helth', '$2a$10$PpeMuMYmKOYzh7bVlmTEieySEVWE.mwpwDfZ1uiBn/9kAOr/WuE8S', '$2a$10$PpeMuMYmKOYzh7bVlmTEie', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
-INSERT INTO "specialist_account"
+INSERT INTO specialist_account
     (account_id, type_id, document_number, description, is_active, created_at, updated_at)
 VALUES
     (1, 1, '103212345', 'Doctor in nutrition', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
-INSERT INTO "physical_exercise_type"
+INSERT INTO physical_exercise_type
     (name, is_active, created_at, updated_at)
 VALUES
     ('strength', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
@@ -34,7 +34,7 @@ VALUES
     ('cardio', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
-INSERT INTO "physical_exercise"
+INSERT INTO physical_exercise
     (type_id, name, description, is_active, created_at, updated_at)
 VALUES
     (1, 'Pull Ups', 'Elbows flex and the shoulders adduct and extend to bring the elbows to the torso', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
