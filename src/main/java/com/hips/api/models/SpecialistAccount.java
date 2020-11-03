@@ -15,7 +15,8 @@ public class SpecialistAccount extends Auditable implements Serializable {
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @JoinColumn(name = "specialist_type_id")
     SpecialistType type;
     @Column(length = 100)
     String documentNumber;

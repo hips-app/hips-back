@@ -27,6 +27,8 @@ public class UserAccount extends Auditable implements Serializable {
 
     boolean autoRenewSubscription = false;
 
+    private boolean paymentMethod = false;
+
     public UserAccount() {
     }
 
@@ -65,6 +67,18 @@ public class UserAccount extends Auditable implements Serializable {
 
     public void setAutoRenewSubscription(boolean autoRenewSubscription) {
         this.autoRenewSubscription = autoRenewSubscription;
+    }
+    public boolean isPaymentMethod() {
+        return paymentMethod;
+    }
+    public void setPaymentMethod(boolean paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+    public SpecialistAccount getSpecialistAccount() {
+        return specialistAccount;
+    }
+    public void setSpecialistAccount(SpecialistAccount specialistAccount) {
+        this.specialistAccount = specialistAccount;
     }
 
     @Override

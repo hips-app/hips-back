@@ -6,10 +6,12 @@ import com.hips.api.models.AccountType;
 import com.hips.api.models.SpecialistAccount;
 import com.hips.api.models.SpecialistType;
 import com.hips.api.models.SubscriptionType;
+import com.hips.api.models.UserAccount;
 import com.hips.api.repositories.AccountTypeRepository;
 
 import com.hips.api.repositories.SpecialistAccountRepository;
 import com.hips.api.repositories.SpecialistTypeRepository;
+import com.hips.api.services.SubscriptionTypeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -35,6 +37,9 @@ public class ApiApplication {
 	@Autowired
 	private SpecialistTypeRepository specialistTypeRepository;
 
+    @Autowired
+    private SubscriptionTypeService subscriptionTypeService;
+
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}
@@ -45,12 +50,14 @@ public class ApiApplication {
 		AccountType userType = new AccountType("User");
 		AccountType expertType = new AccountType("Specialist");
 
-		accountTypeRepository.save(userType);
+		AccountType accountType1 =accountTypeRepository.save(userType);
 		AccountType accountType = accountTypeRepository.save(expertType);
 
 		SpecialistType specialistType = new SpecialistType("Nutritionist");
+		SpecialistType specialistType1 = new SpecialistType("Personal Trainer");
 
 		specialistType = specialistTypeRepository.save(specialistType);
+		specialistType1 = specialistTypeRepository.save(specialistType1);
 
 		String salt = BCrypt.gensalt();
 		String pass = BCrypt.hashpw("12345", salt);
@@ -75,10 +82,29 @@ public class ApiApplication {
 
 		specialistAccountRepository.save(specialistAccount);
 
-        SubscriptionType subscriptionType = new SubscriptionType("Premium");
+		Account account1 = new Account(
+				UUID.randomUUID().toString(),
+				accountType1,
+				"prueba@test.com",
+				"Pepito",
+				"Perez",
+				pass,
+				salt,
+				""
+		);
+ //       UserAccount userAccount= new UserAccount
 
+		//SpecialistAccount specialistAccount1 = new SpecialistAccount(
+		//		account1,
+		//		specialistType1,
+		//		"103212345",
+		//		"Doctor in nutrition"
+		//);
 
+		//specialistAccountRepository.save(specialistAccount1);
 
+        SubscriptionType subscriptionType = new SubscriptionType("Premium",20,"Usuario premium con acceso a rutinas de entrenamiento y dietas a seguir sugeridas por profesionales recomendados");
+        subscriptionTypeService.save(subscriptionType);
 	}
 }
 

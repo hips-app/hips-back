@@ -21,13 +21,12 @@ public class UserSubscription extends Auditable implements Serializable {
     @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
-    @Column(name = "user_subscription_date")
+    @Column(name = "expiration_date")
     private Date expirationDate;
 
     public UserSubscription() {
     }
-    public UserSubscription(Integer id,SubscriptionType subscriptionType , UserAccount userAccount, Date expirationDate) {
-        this.id= id;
+    public UserSubscription(SubscriptionType subscriptionType , UserAccount userAccount, Date expirationDate) {
         this.subscriptionType=subscriptionType;
         this.userAccount= userAccount;
         this.expirationDate=expirationDate;
