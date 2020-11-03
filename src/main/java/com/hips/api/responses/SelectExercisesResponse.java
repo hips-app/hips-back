@@ -9,7 +9,7 @@ import java.util.List;
 public class SelectExercisesResponse  implements Serializable {
 
     int id;
-    List<PhysicalExerciseType> physicalExerciseType;
+    PhysicalExerciseType type;
     String description;
 
     public SelectExercisesResponse() {
@@ -17,7 +17,7 @@ public class SelectExercisesResponse  implements Serializable {
 
     public SelectExercisesResponse(PhysicalExercise physicalExercise) {
         this.id = physicalExercise.getId();
-        this.physicalExerciseType = physicalExercise.getPhysicalExerciseType();
+        this.type = physicalExercise.getType();
         this.description = physicalExercise.getDescription();
     }
 
@@ -29,12 +29,12 @@ public class SelectExercisesResponse  implements Serializable {
         this.id = id;
     }
 
-    public List<PhysicalExerciseType> getPhysicalExerciseType() {
-        return physicalExerciseType;
+    public PhysicalExerciseType getType() {
+        return type;
     }
 
-    public void setPhysicalExerciseType(List<PhysicalExerciseType> physicalExerciseType) {
-        this.physicalExerciseType = physicalExerciseType;
+    public void settype(PhysicalExerciseType type) {
+        this.type = type;
     }
 
     public String getDescription() {

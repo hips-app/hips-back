@@ -8,7 +8,8 @@ import java.io.Serializable;
 public class WeekDay extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+@Column(columnDefinition = "serial")
     int id;
 
     @Column( length = 100)
