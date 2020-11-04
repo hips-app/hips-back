@@ -52,23 +52,12 @@ public class NutritionalInformationController {
 
         account = accountRepository.getById(accId);
 
-        UserAccount userAccount;
+        if(account.getType().getId() == 1 && accId != userId){
 
-        if(account.getType().getId() == 1){
-
-            userAccount = userAccountRepository.findByAccount(account);
-
-            if(userAccount.getId() != userId){
-
-                System.out.println(userAccount.getId());
-                System.out.println(userId);
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            }
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        else {
 
-            userAccount = userAccountRepository.getById(userId);
-        }
+        UserAccount userAccount = userAccountRepository.findByAccount(account);
 
         if(userAccount == null){
 
