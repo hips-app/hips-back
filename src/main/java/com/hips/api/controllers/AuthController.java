@@ -46,7 +46,7 @@ public class AuthController {
       String token = AuthenticationAssistant.createJWT(
         JWT_SECRET,
         account.getId(),
-        (long)1000 * 60 * 60 * 2
+        (long) 1000 * 60 * 60 * 2
       );
       tokenRepository.save(new AccountTokenWhitelist(account, token));
       return new ResponseEntity<>(
@@ -85,6 +85,7 @@ public class AuthController {
   public ResponseEntity<LogInResponse> oauthLogin(
     @RequestBody HashMap<String, String> req
   ) {
+    // TODO auth validation
     String email, uid;
     email = req.get("email");
     uid = req.get("uid");
@@ -97,8 +98,8 @@ public class AuthController {
       );
     }
     if (account.getUid() == null) {
-      account.setUid(uid);
-      accountRepository.save(account);
+      //account.setUid(uid);
+      //accountRepository.save(account);
     } else if (!account.getUid().equals(uid)) {
       return new ResponseEntity<>(
         new LogInResponse("Unautorized"),
@@ -108,7 +109,7 @@ public class AuthController {
     String token = AuthenticationAssistant.createJWT(
       JWT_SECRET,
       account.getId(),
-      (long)1000 * 60 * 60 * 2
+      (long) 1000 * 60 * 60 * 2
     );
     tokenRepository.save(new AccountTokenWhitelist(account, token));
     return new ResponseEntity<>(
@@ -121,6 +122,7 @@ public class AuthController {
   public ResponseEntity<LogInResponse> loginWithToken(
     @RequestHeader("Authorization") String token
   ) {
+    // TODO token validation
     Integer accountId;
     if (token == null) {
       return new ResponseEntity<>(

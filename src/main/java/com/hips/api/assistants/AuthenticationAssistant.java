@@ -23,7 +23,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
-
 public class AuthenticationAssistant {
 
   public static String getJWT_Subject(String secret, String token) throws SignatureException {

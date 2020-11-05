@@ -10,13 +10,11 @@ import javax.persistence.*;
 public class UserAccount extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "user_account_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_account_id", updatable = false, nullable = false)
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    UserType type;
 
     @OneToMany(mappedBy = "userAccount")
     private List<UserSubscription> userSubscriptions;
@@ -32,9 +30,8 @@ public class UserAccount extends Auditable implements Serializable {
     public UserAccount() {
     }
 
-    public UserAccount(Account account, UserType type) {
+    public UserAccount(Account account) {
         this.account = account;
-        this.type = type;
     }
 
     public int getId() {
@@ -51,14 +48,6 @@ public class UserAccount extends Auditable implements Serializable {
 
     public void setAccount(Account account) {
         this.account = account;
-    }
-
-    public UserType getType() {
-        return type;
-    }
-
-    public void setType(UserType type) {
-        this.type = type;
     }
 
     public boolean isAutoRenewSubscription() {
@@ -83,8 +72,8 @@ public class UserAccount extends Auditable implements Serializable {
 
     @Override
     public String toString() {
-        return "userAccount{" + "id=" + id + ", account=" + account + ", type="
-                + type + ", autoRenewSubscription=" + autoRenewSubscription +
+        return "userAccount{" + "id=" + id + ", account=" + account +
+                 ", autoRenewSubscription=" + autoRenewSubscription +
                 ", isActive=" + this.isActive() + ", createdAt=" + this.getCreatedAt() +
                 ", updatedAt=" + this.getUpdatedAt() + '}';
     }

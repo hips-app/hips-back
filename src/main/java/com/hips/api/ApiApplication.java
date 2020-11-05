@@ -2,17 +2,15 @@ package com.hips.api;
 
 import com.hips.api.models.Account;
 import com.hips.api.models.AccountType;
-
 import com.hips.api.models.SpecialistAccount;
 import com.hips.api.models.SpecialistType;
 import com.hips.api.models.SubscriptionType;
 import com.hips.api.models.UserAccount;
 import com.hips.api.repositories.AccountTypeRepository;
-
 import com.hips.api.repositories.SpecialistAccountRepository;
 import com.hips.api.repositories.SpecialistTypeRepository;
 import com.hips.api.services.SubscriptionTypeService;
-
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.*;
@@ -21,35 +19,34 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @EnableAutoConfiguration
 @SpringBootApplication
 public class ApiApplication {
 
-	@Autowired
-	private AccountTypeRepository accountTypeRepository;
+  @Autowired
+  private AccountTypeRepository accountTypeRepository;
 
-	@Autowired
-	private SpecialistAccountRepository specialistAccountRepository;
-
-	@Autowired
-	private SpecialistTypeRepository specialistTypeRepository;
-
+<<<<<<< HEAD
     @Autowired
     private SubscriptionTypeService subscriptionTypeService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
 	}
+=======
+  @Autowired
+  private SpecialistAccountRepository specialistAccountRepository;
+>>>>>>> develop
 
-	@EventListener
-	public void appReady(ApplicationReadyEvent event){
+  @Autowired
+  private SpecialistTypeRepository specialistTypeRepository;
 
-		AccountType userType = new AccountType("User");
-		AccountType expertType = new AccountType("Specialist");
+  public static void main(String[] args) {
+    SpringApplication.run(ApiApplication.class, args);
+  }
 
+<<<<<<< HEAD
 		AccountType accountType1 =accountTypeRepository.save(userType);
 		AccountType accountType = accountTypeRepository.save(expertType);
 
@@ -106,5 +103,8 @@ public class ApiApplication {
         SubscriptionType subscriptionType = new SubscriptionType("Premium",20,"Usuario premium con acceso a rutinas de entrenamiento y dietas a seguir sugeridas por profesionales recomendados");
         subscriptionTypeService.save(subscriptionType);
 	}
+=======
+  @EventListener
+  public void appReady(ApplicationReadyEvent event) {}
+>>>>>>> develop
 }
-

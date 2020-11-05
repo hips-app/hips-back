@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 public class SelectExercisesService {
     PhysicalExerciseRepository physicalExerciseRepository;
 
-    public void SelectExercise(PhysicalExerciseType physicalExerciseType){
-        physicalExerciseRepository.findByPhysicalExerciseType(physicalExerciseType);
+    public void SelectExercise(PhysicalExerciseType type){
+        physicalExerciseRepository.findByType(type);
     }
 
 }

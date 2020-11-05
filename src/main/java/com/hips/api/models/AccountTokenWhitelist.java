@@ -9,7 +9,8 @@ public class AccountTokenWhitelist extends Auditable
         implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     int id;
     @ManyToOne(fetch = FetchType.LAZY)
     Account account;

@@ -10,8 +10,8 @@ import javax.persistence.*;
 public class SpecialistAccount extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "specialist_account_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "specialist_account_id", updatable = false, nullable = false)
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;

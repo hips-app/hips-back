@@ -10,10 +10,10 @@ import java.util.List;
 public class SpecialistType extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "specialist_type_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "specialist_type_id", updatable = false, nullable = false)
     int id;
-    @Column(length = 100)
+    @Column(length = 100, unique = true)
     String name;
 
     @OneToMany(mappedBy = "type")
