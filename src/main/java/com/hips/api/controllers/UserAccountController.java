@@ -73,7 +73,7 @@ public class UserAccountController {
       return new ResponseEntity<>(new LogInResponse(), HttpStatus.BAD_REQUEST);
     }
 
-    List<AccountType> accountType = accountTypeRepository.findByName("User");
+    List<AccountType> accountType = accountTypeRepository.findByName("user");
     String salt = BCrypt.gensalt();
     pass = BCrypt.hashpw(pass, salt);
     Account account = new Account(
