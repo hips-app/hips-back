@@ -12,7 +12,7 @@ public class SportPlan extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(columnDefinition = "serial")
+    @Column(name = "id", updatable = false, nullable = false)
     int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -36,6 +36,13 @@ public class SportPlan extends Auditable implements Serializable {
 
     public SportPlan(int id, UserGoal userGoal, Date startDate, Date endDate, String description) {
         this.id = id;
+        this.userGoal = userGoal;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.description = description;
+    }
+
+    public SportPlan(UserGoal userGoal, Date startDate, Date endDate, String description) {
         this.userGoal = userGoal;
         this.startDate = startDate;
         this.endDate = endDate;

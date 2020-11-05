@@ -54,6 +54,10 @@ public class UserAccountController {
   @Autowired
   private UserGoalRepository userGoalRepository;
 
+  @Autowired
+  private SportPlanRepository sportPlanRepository;
+  
+
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
   @PostMapping
@@ -73,7 +77,7 @@ public class UserAccountController {
       return new ResponseEntity<>(new LogInResponse(), HttpStatus.BAD_REQUEST);
     }
 
-    List<AccountType> accountType = accountTypeRepository.findByName("User");
+    List<AccountType> accountType = accountTypeRepository.findByName("user");
     String salt = BCrypt.gensalt();
     pass = BCrypt.hashpw(pass, salt);
     Account account = new Account(
@@ -87,7 +91,7 @@ public class UserAccountController {
       ""
     );
 
-    UserAccount userAccount = new UserAccount(account, null);
+    UserAccount userAccount = new UserAccount(account);
 
     try {
       userAccount = userAccountRepository.save(userAccount);
@@ -147,6 +151,8 @@ public class UserAccountController {
     UserAccount userAccount = userAccountRepository.findByAccount(account);
     UserGoal userGoal = new UserGoal(userAccount, description, expirationDate);
     userGoal = userGoalRepository.save(userGoal);
+    SportPlan sportPlan = new SportPlan(userGoal, new Date(), expirationDate, description);
+    sportPlan = sportPlanRepository.save(sportPlan);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

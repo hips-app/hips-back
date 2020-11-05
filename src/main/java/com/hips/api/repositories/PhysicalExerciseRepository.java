@@ -12,6 +12,8 @@ public interface PhysicalExerciseRepository extends CrudRepository<PhysicalExerc
 
     List<PhysicalExercise>findByType(PhysicalExerciseType type);
 
+    List<PhysicalExercise>findAll();
+
 }
 
 
