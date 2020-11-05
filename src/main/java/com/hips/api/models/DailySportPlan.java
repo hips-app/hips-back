@@ -9,7 +9,7 @@ public class DailySportPlan extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(columnDefinition = "serial")
+    @Column(name = "id", updatable = false, nullable = false)
     int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -22,6 +22,12 @@ public class DailySportPlan extends Auditable implements Serializable {
     String description;
 
     public DailySportPlan() {
+    }
+
+    public DailySportPlan(SportPlan sportPlan, WeekDay weekDay, String description) {
+        this.sportPlan = sportPlan;
+        this.weekDay = weekDay;
+        this.description = description;
     }
 
     public int getId() {

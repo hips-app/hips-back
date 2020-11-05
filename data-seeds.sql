@@ -49,3 +49,15 @@ VALUES
     (5, 'Outside Running', 'Get along with your body Get along with your body Get along with your body Get along with your body', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (5, 'Outside Running 2', 'Get along with your body Get along with your body Get along with your body Get along with your body', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
+
+INSERT INTO week_day
+    (name, is_active, created_at, updated_at)
+VALUES
+    ('monday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('tuesday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('wednesday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('thursday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('friday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('saturday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('sunday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+;
