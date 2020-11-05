@@ -10,8 +10,8 @@ import java.util.List;
 public class SubscriptionType extends Auditable implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    @Column(name = "subscription_type_id")
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "subscription_type_id", updatable = false, nullable = false)
     private Integer id;
 
     @Column(name = "subscription_type_name")
