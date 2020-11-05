@@ -4,12 +4,17 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+@Entity
+@Table(name = "exercise_data_point")
 public class ExerciseDataPoint extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     @Column(columnDefinition = "serial")
     int id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    UserAccount userAccount;
 
     @ManyToOne(fetch = FetchType.EAGER)
     PlannedExercise plannedExercise;
@@ -19,7 +24,8 @@ public class ExerciseDataPoint extends Auditable implements Serializable {
     public ExerciseDataPoint() {
     }
 
-    public ExerciseDataPoint(PlannedExercise plannedExercise, Date date) {
+    public ExerciseDataPoint(UserAccount userAccount, PlannedExercise plannedExercise, Date date) {
+        this.userAccount = userAccount;
         this.plannedExercise = plannedExercise;
         this.date = date;
     }
@@ -46,5 +52,13 @@ public class ExerciseDataPoint extends Auditable implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
     }
 }
