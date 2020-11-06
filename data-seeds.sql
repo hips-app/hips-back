@@ -19,9 +19,14 @@ VALUES
 ;
 
 INSERT INTO specialist_account
-    (account_id, type_id, document_number, description, is_active, created_at, updated_at)
+    (account_id, specialist_type_id, document_number, description, is_active, created_at, updated_at)
 VALUES
     (1, 1, '103212345', 'Doctor in nutrition', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+;
+
+INSERT INTO subscription_type (subscription_type_name,subscription_type_description,subscription_type_price,is_active, created_at, updated_at)
+VALUES
+    ('Premium','Usuario premium con acceso a rutinas de entrenamiento y dietas a seguir sugeridas por profesionales recomendados',20, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
 INSERT INTO physical_exercise_type
@@ -48,4 +53,16 @@ VALUES
     (4, 'Standing knee lift', 'feel steadier on your feet and helps prevent falls', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (5, 'Outside Running', 'Get along with your body Get along with your body Get along with your body Get along with your body', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     (5, 'Outside Running 2', 'Get along with your body Get along with your body Get along with your body Get along with your body', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+;
+
+INSERT INTO week_day
+    (name, is_active, created_at, updated_at)
+VALUES
+    ('monday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('tuesday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('wednesday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('thursday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('friday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('saturday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    ('sunday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;

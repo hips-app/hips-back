@@ -1,6 +1,8 @@
 package com.hips.api.models;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,16 +11,20 @@ public class SpecialistAccount extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(columnDefinition = "serial")
+    @Column(name = "specialist_account_id", updatable = false, nullable = false)
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     Account account;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne()
+    @JoinColumn(name = "specialist_type_id")
     SpecialistType type;
     @Column(length = 100)
     String documentNumber;
     @Column(columnDefinition = "TEXT")
     String description;
+
+    @OneToMany(mappedBy = "specialistAccount")
+    List<UserAccount> userAccounts;
 
     public SpecialistAccount() {
     }

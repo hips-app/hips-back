@@ -9,7 +9,7 @@ public class PlannedExercise extends Auditable implements Serializable {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(columnDefinition = "serial")
+    @Column(name = "id", updatable = false, nullable = false)
     int id;
 
     @ManyToOne(fetch = FetchType.LAZY)
