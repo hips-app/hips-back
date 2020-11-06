@@ -1,70 +1,80 @@
 package com.hips.api.models;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_account")
 public class UserAccount extends Auditable implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id", updatable = false, nullable = false)
-  int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_account_id", updatable = false, nullable = false)
+    int id;
+    @OneToOne(cascade = {CascadeType.ALL})
+    Account account;
 
-  @OneToOne(cascade = { CascadeType.ALL })
-  Account account;
+    @OneToMany(mappedBy = "userAccount")
+    private List<UserSubscription> userSubscriptions;
 
-  @Column()
-  boolean autoRenewSubscription = false;
+    @ManyToOne
+    @JoinColumn(name = "specialist_account_id")
+    SpecialistAccount specialistAccount;
 
-  public UserAccount() {}
+    boolean autoRenewSubscription = false;
 
-  public UserAccount(Account account) {
-    this.account = account;
-  }
+    private boolean paymentMethod = false;
 
-  public int getId() {
-    return id;
-  }
+    public UserAccount() {
+    }
 
-  public void setId(int id) {
-    this.id = id;
-  }
+    public UserAccount(Account account) {
+        this.account = account;
+    }
 
-  public Account getAccount() {
-    return account;
-  }
+    public int getId() {
+        return id;
+    }
 
-  public void setAccount(Account account) {
-    this.account = account;
-  }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-  public boolean isAutoRenewSubscription() {
-    return autoRenewSubscription;
-  }
+    public Account getAccount() {
+        return account;
+    }
 
-  public void setAutoRenewSubscription(boolean autoRenewSubscription) {
-    this.autoRenewSubscription = autoRenewSubscription;
-  }
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
-  @Override
-  public String toString() {
-    return (
-      "userAccount{" +
-      "id=" +
-      id +
-      ", account=" +
-      account +
-      ", autoRenewSubscription=" +
-      autoRenewSubscription +
-      ", isActive=" +
-      this.isActive() +
-      ", createdAt=" +
-      this.getCreatedAt() +
-      ", updatedAt=" +
-      this.getUpdatedAt() +
-      '}'
-    );
-  }
+    public boolean isAutoRenewSubscription() {
+        return autoRenewSubscription;
+    }
+
+    public void setAutoRenewSubscription(boolean autoRenewSubscription) {
+        this.autoRenewSubscription = autoRenewSubscription;
+    }
+    public boolean isPaymentMethod() {
+        return paymentMethod;
+    }
+    public void setPaymentMethod(boolean paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+    public SpecialistAccount getSpecialistAccount() {
+        return specialistAccount;
+    }
+    public void setSpecialistAccount(SpecialistAccount specialistAccount) {
+        this.specialistAccount = specialistAccount;
+    }
+
+    @Override
+    public String toString() {
+        return "userAccount{" + "id=" + id + ", account=" + account +
+                 ", autoRenewSubscription=" + autoRenewSubscription +
+                ", isActive=" + this.isActive() + ", createdAt=" + this.getCreatedAt() +
+                ", updatedAt=" + this.getUpdatedAt() + '}';
+    }
 }
