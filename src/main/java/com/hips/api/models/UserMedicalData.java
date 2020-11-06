@@ -14,8 +14,8 @@ import javax.persistence.*;
 public class UserMedicalData extends Auditable implements Serializable{
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     int id;
     @OneToOne(cascade = {CascadeType.ALL})
     UserAccount userAccount;

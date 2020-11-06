@@ -7,61 +7,64 @@ import javax.persistence.*;
 @Table(name = "user_account")
 public class UserAccount extends Auditable implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    int id;
-    @OneToOne(cascade = {CascadeType.ALL})
-    Account account;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
-    UserType type;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", updatable = false, nullable = false)
+  int id;
 
-    boolean autoRenewSubscription = false;
+  @OneToOne(cascade = { CascadeType.ALL })
+  Account account;
 
-    public UserAccount() {
-    }
+  @Column()
+  boolean autoRenewSubscription = false;
 
-    public UserAccount(Account account, UserType type) {
-        this.account = account;
-        this.type = type;
-    }
+  public UserAccount() {}
 
-    public int getId() {
-        return id;
-    }
+  public UserAccount(Account account) {
+    this.account = account;
+  }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public Account getAccount() {
-        return account;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public void setAccount(Account account) {
-        this.account = account;
-    }
+  public Account getAccount() {
+    return account;
+  }
 
-    public UserType getType() {
-        return type;
-    }
+  public void setAccount(Account account) {
+    this.account = account;
+  }
 
-    public void setType(UserType type) {
-        this.type = type;
-    }
+  public boolean isAutoRenewSubscription() {
+    return autoRenewSubscription;
+  }
 
-    public boolean isAutoRenewSubscription() {
-        return autoRenewSubscription;
-    }
+  public void setAutoRenewSubscription(boolean autoRenewSubscription) {
+    this.autoRenewSubscription = autoRenewSubscription;
+  }
 
-    public void setAutoRenewSubscription(boolean autoRenewSubscription) {
-        this.autoRenewSubscription = autoRenewSubscription;
-    }
-
-    @Override
-    public String toString() {
-        return "userAccount{" + "id=" + id + ", account=" + account + ", type="
-                + type + ", autoRenewSubscription=" + autoRenewSubscription + 
-                ", isActive=" + this.isActive() + ", createdAt=" + this.getCreatedAt() +
-                ", updatedAt=" + this.getUpdatedAt() + '}';
-    }
+  @Override
+  public String toString() {
+    return (
+      "userAccount{" +
+      "id=" +
+      id +
+      ", account=" +
+      account +
+      ", autoRenewSubscription=" +
+      autoRenewSubscription +
+      ", isActive=" +
+      this.isActive() +
+      ", createdAt=" +
+      this.getCreatedAt() +
+      ", updatedAt=" +
+      this.getUpdatedAt() +
+      '}'
+    );
+  }
 }
