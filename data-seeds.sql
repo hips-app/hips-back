@@ -66,3 +66,4 @@ VALUES
     ('saturday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('sunday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
+
