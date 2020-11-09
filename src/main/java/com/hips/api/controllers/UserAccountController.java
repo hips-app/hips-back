@@ -113,7 +113,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = AuthenticationAssistant.validateToken(accountRepository, token);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -156,7 +156,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = AuthenticationAssistant.validateToken(accountRepository, token);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -232,10 +232,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @PathVariable("id") int userId
   ) {
-    if (token == null) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-    Account account = AuthenticationAssistant.validateTokenAndUser(accountRepository, token, userId);
+    Account account = AuthenticationAssistant.validateTokenAndUser(accountRepository, jwtSecret, token, userId);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -264,7 +261,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = AuthenticationAssistant.validateToken(accountRepository, token);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
