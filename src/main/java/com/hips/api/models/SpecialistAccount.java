@@ -24,7 +24,7 @@ public class SpecialistAccount extends Auditable implements Serializable {
     String description;
 
     @OneToMany(mappedBy = "specialistAccount")
-    List<UserAccount> userAccounts;
+    private List<UserAccount> userAccounts;
 
     public SpecialistAccount() {
     }

@@ -16,5 +16,7 @@ public class ApiApplication {
   }
 
   @EventListener
-  public void appReady(ApplicationReadyEvent event) {}
+  public void appReady(ApplicationReadyEvent event) {
+      //this method is empty
+  }
 }

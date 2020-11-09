@@ -15,9 +15,6 @@ public class FoodPlan extends Auditable implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    UserGoal userGoal;
-
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false, updatable = false)
     @CreatedDate
@@ -28,6 +25,9 @@ public class FoodPlan extends Auditable implements Serializable {
     @CreatedDate
     Date endDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    UserGoal userGoal;
+
     @Column(length = 500)
     String description;
 
@@ -35,10 +35,10 @@ public class FoodPlan extends Auditable implements Serializable {
     }
 
     public FoodPlan(UserGoal userGoal, Date startDate, Date endDate, String description) {
-        this.userGoal = userGoal;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.description = description;
+        this.userGoal = userGoal;
+        this.endDate = endDate;
+        this.startDate = startDate;
     }
 
     public int getId() {
@@ -49,20 +49,20 @@ public class FoodPlan extends Auditable implements Serializable {
         this.id = id;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public UserGoal getUserGoal() {
         return userGoal;
     }
 
     public void setUserGoal(UserGoal userGoal) {
         this.userGoal = userGoal;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
     }
 
     public Date getEndDate() {
@@ -73,11 +73,11 @@ public class FoodPlan extends Auditable implements Serializable {
         this.endDate = endDate;
     }
 
-    public String getDescription() {
-        return description;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 }

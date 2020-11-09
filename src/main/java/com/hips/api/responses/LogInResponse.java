@@ -1,11 +1,8 @@
 package com.hips.api.responses;
 
 import com.hips.api.models.Account;
-import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserSubscription;
-import com.hips.api.services.UserSubscriptionService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 
@@ -18,8 +15,6 @@ public class LogInResponse implements Serializable {
   UserSubscription subscription;
   String errorMessage;
   Integer accountType;
-  @Autowired
-  UserSubscriptionService userSubscriptionService;
   public LogInResponse() {}
 
   public LogInResponse(String errorMessage) {

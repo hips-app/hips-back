@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class ExerciseInformationController {
 
     @Value("${JWT_SECRET}")
-    private String JWT_SECRET;
+    private String jwtSecret;
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -38,8 +38,6 @@ public class ExerciseInformationController {
 
     private PlannedExerciseRepository plannedExerciseRepository;
 
-    private AuthenticationAssistant authenticationAssistant = new AuthenticationAssistant();
-
     @PostMapping("/{id}")
     public ResponseEntity<Void> saveCaloriesDataPoint(@RequestHeader("Authorization") String token, @PathVariable("id") int userId, @RequestBody SaveExerciseSessionRequest body){
 
@@ -51,7 +49,7 @@ public class ExerciseInformationController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Integer accId = Integer.parseInt(authenticationAssistant.getJWT_Subject(JWT_SECRET, token));
+        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(jwtSecret, token));
 
         Account account = accountRepository.getById(accId);
 
@@ -69,8 +67,8 @@ public class ExerciseInformationController {
 
         List<ExerciseDataPoint> dataPoints = ids
                 .stream()
-                .map((id) -> plannedExerciseRepository.getById(id))
-                .map((exercise) -> new ExerciseDataPoint(userAccount, exercise, date))
+                .map(id -> plannedExerciseRepository.getById(id))
+                .map(exercise -> new ExerciseDataPoint(userAccount, exercise, date))
                 .collect(Collectors.toList());
 
         exerciseDataPointRepository.saveAll(dataPoints);

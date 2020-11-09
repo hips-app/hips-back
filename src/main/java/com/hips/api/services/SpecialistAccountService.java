@@ -23,14 +23,14 @@ public class SpecialistAccountService {
 
     public List<SpecialistAccount> findAll() {
         Iterable<SpecialistAccount> it = specialistAccountRepository.findAll();
-        List<SpecialistAccount> specialistAccount = new ArrayList<SpecialistAccount>();
-        it.forEach(e -> specialistAccount.add(e));
+        List<SpecialistAccount> specialistAccount = new ArrayList<>();
+        it.forEach(specialistAccount::add);
         return specialistAccount;
     }
 
     public  Integer getId(String token){
         Integer specialistId;
-        specialistId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(jwtSecret, token));
+        specialistId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(jwtSecret, token));
 
         return specialistId;
     }
