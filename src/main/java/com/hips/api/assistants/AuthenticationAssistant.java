@@ -1,10 +1,12 @@
 package com.hips.api.assistants;
-
 import io.jsonwebtoken.*;
 import java.security.Key;
 import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+
+import com.hips.api.models.Account;
+import com.hips.api.repositories.AccountRepository;
 
 public class AuthenticationAssistant {
 
