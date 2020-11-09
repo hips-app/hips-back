@@ -46,7 +46,7 @@ public class NutritionalInformationController {
 
         Account account;
 
-        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(jwtSecret, token));
+        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(jwtSecret, token));
 
         account = accountRepository.getById(accId);
 

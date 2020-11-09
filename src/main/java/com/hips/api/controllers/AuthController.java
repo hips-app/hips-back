@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth")
 public class AuthController {
+
   @Value("${JWT_SECRET}")
   private String jwtSecret;
-  private static final String ACCOUNTERROR="The account doesn't exist";
+
+  private static final String ACCOUNTERROR = "The account doesn't exist";
 
   @Autowired
   private AccountTokenWhitelistRepository tokenRepository;
@@ -73,10 +75,8 @@ public class AuthController {
     try {
       tokenRepository.deleteByToken(token);
     } catch (SignatureException | ExpiredJwtException jwtException) {
-      jwtException.printStackTrace();
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     } catch (Exception e) {
-      e.printStackTrace();
       return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -99,8 +99,7 @@ public class AuthController {
         HttpStatus.BAD_REQUEST
       );
     }
-    if (account.getUid() == null) {
-    } else if (!account.getUid().equals(uid)) {
+    if (account.getUid() == null || !account.getUid().equals(uid)) {
       return new ResponseEntity<>(
         new LogInResponse("Unautorized"),
         HttpStatus.BAD_REQUEST
@@ -132,12 +131,9 @@ public class AuthController {
     try {
       accountId =
         Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
         );
-    } catch (
-      SignatureException | NumberFormatException | ExpiredJwtException e
-    ) {
-      e.printStackTrace();
+    } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 

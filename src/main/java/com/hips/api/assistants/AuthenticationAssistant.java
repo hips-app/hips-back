@@ -7,11 +7,9 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 
 public class AuthenticationAssistant {
-    public AuthenticationAssistant() {
-        //this method is empty
-    }
 
-  public static String getJWT_Subject(String secret, String token) throws SignatureException {
+  public static String getJWTSubject(String secret, String token)
+    throws SignatureException {
     Claims claims = Jwts
       .parser()
       .setSigningKey(DatatypeConverter.parseBase64Binary(secret))

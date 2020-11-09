@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RequestMapping("/users")
 public class UserAccountController {
+
   static final String PARAM_FIRST_NAME = "firstName";
   static final String PARAM_LAST_NAME = "lastName";
   static final String PARAM_EMAIL = "email";
@@ -50,7 +51,6 @@ public class UserAccountController {
 
   @Autowired
   private SportPlanRepository sportPlanRepository;
-
 
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
@@ -100,7 +100,7 @@ public class UserAccountController {
     String token = AuthenticationAssistant.createJWT(
       jwtSecret,
       account.getId(),
-      (long)1000 * 60 * 2
+      (long) 1000 * 60 * 2
     );
 
     tokenRepository.save(new AccountTokenWhitelist(account, token));
@@ -114,8 +114,7 @@ public class UserAccountController {
   public ResponseEntity<Void> setGoal(
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
-  )
-    throws Exception {
+  ) {
     Integer accountId;
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -123,9 +122,9 @@ public class UserAccountController {
     try {
       accountId =
         Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
         );
-    } catch (ExpiredJwtException e) {
+    } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     Account account = accountRepository.getById(accountId);
@@ -141,14 +140,19 @@ public class UserAccountController {
     expirationDate =
       new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
 
-    if (description == null || expirationDate == null || token == null) {
+    if (description == null || expirationDate == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     UserAccount userAccount = userAccountRepository.findByAccount(account);
     UserGoal userGoal = new UserGoal(userAccount, description, expirationDate);
     userGoal = userGoalRepository.save(userGoal);
-    SportPlan sportPlan = new SportPlan(userGoal, new Date(), expirationDate, description);
+    SportPlan sportPlan = new SportPlan(
+      userGoal,
+      new Date(),
+      expirationDate,
+      description
+    );
     sportPlanRepository.save(sportPlan);
     return new ResponseEntity<>(HttpStatus.OK);
   }
@@ -166,12 +170,9 @@ public class UserAccountController {
     try {
       accountId =
         Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
         );
-    } catch (
-      SignatureException | NumberFormatException | ExpiredJwtException e
-    ) {
-      //e.printStackTrace();
+    } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
@@ -202,7 +203,7 @@ public class UserAccountController {
     try {
       date = dateFormat.parse(birthDate);
     } catch (Exception e) {
-      //e.printStackTrace();
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     if (
       firstName != null &&
@@ -250,16 +251,14 @@ public class UserAccountController {
     }
     Integer accountId;
     try {
-      accountId = Integer.parseInt(
-        AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
-      );
+      accountId =
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
       if (!accountId.equals(userId)) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
       }
-    } catch (
-      SignatureException | NumberFormatException | ExpiredJwtException e
-    ) {
-      //e.printStackTrace();
+    } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
@@ -281,12 +280,12 @@ public class UserAccountController {
       HttpStatus.OK
     );
   }
+
   @PostMapping("/profile-picture")
   public ResponseEntity<Void> setProfilePicture(
-          @RequestHeader("Authorization") String token,
-          @RequestBody Map<String, String> req
-  )
-          throws Exception {
+    @RequestHeader("Authorization") String token,
+    @RequestBody Map<String, String> req
+  ) {
     Integer accountId;
 
     if (token == null) {
@@ -294,10 +293,10 @@ public class UserAccountController {
     }
     try {
       accountId =
-              Integer.parseInt(
-                      AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
-              );
-    } catch (ExpiredJwtException e) {
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
+    } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     Account account = accountRepository.getById(accountId);

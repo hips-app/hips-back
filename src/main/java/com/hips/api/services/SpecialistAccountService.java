@@ -30,7 +30,7 @@ public class SpecialistAccountService {
 
     public  Integer getId(String token){
         Integer specialistId;
-        specialistId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(jwtSecret, token));
+        specialistId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(jwtSecret, token));
 
         return specialistId;
     }

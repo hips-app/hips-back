@@ -49,7 +49,7 @@ public class ExerciseInformationController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(jwtSecret, token));
+        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(jwtSecret, token));
 
         Account account = accountRepository.getById(accId);
 
