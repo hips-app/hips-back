@@ -24,7 +24,7 @@ public class SpecialistAccountService {
     public List<SpecialistAccount> findAll() {
         Iterable<SpecialistAccount> it = specialistAccountRepository.findAll();
         List<SpecialistAccount> specialistAccount = new ArrayList<>();
-        it.forEach(e -> specialistAccount.add(e));
+        it.forEach(specialistAccount::add);
         return specialistAccount;
     }
 

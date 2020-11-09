@@ -23,7 +23,7 @@ public class TokenAuthenticationService {
     //this method is empty
   }
 
-  public String getJWTSubject(String token) throws SignatureException {
+  public String getJWTSubject(String token) throws RuntimeException {
     Claims claims = Jwts
       .parser()
       .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecret))
