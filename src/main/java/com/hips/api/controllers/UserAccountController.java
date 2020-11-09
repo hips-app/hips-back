@@ -113,7 +113,11 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -156,7 +160,11 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -192,38 +200,38 @@ public class UserAccountController {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     if (
-      firstName != null &&
-      lastName != null &&
-      heightInCentimeters != 0 &&
-      weightInKilograms != 0 &&
-      date != null
+      firstName == null ||
+      lastName == null ||
+      heightInCentimeters == 0 ||
+      weightInKilograms == 0 ||
+      date == null
     ) {
-      if (!account.getFirstName().equals(firstName)) {
-        account.setFirstName(firstName);
-      }
-      if (!account.getLastName().equals(lastName)) {
-        account.setLastName(lastName);
-      }
-      accountRepository.save(account);
-      if (userMedicalData != null) {
-        if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
-          userMedicalData.setHeightInCentimeters(heightInCentimeters);
-        }
-        if (weightInKilograms != userMedicalData.getWeightInKilograms()) {
-          userMedicalData.setWeightInKilograms(weightInKilograms);
-        }
-        userMedicalDataRepository.save(userMedicalData);
-      } else {
-        UserMedicalData medicaldata = new UserMedicalData(
-          userAccount,
-          date,
-          heightInCentimeters,
-          weightInKilograms
-        );
-        userMedicalDataRepository.save(medicaldata);
-      }
+      return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    if (!account.getFirstName().equals(firstName)) {
+      account.setFirstName(firstName);
+    }
+    if (!account.getLastName().equals(lastName)) {
+      account.setLastName(lastName);
+    }
+    accountRepository.save(account);
+    if (userMedicalData != null) {
+      if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
+        userMedicalData.setHeightInCentimeters(heightInCentimeters);
+      }
+      if (weightInKilograms != userMedicalData.getWeightInKilograms()) {
+        userMedicalData.setWeightInKilograms(weightInKilograms);
+      }
+      userMedicalDataRepository.save(userMedicalData);
+    } else {
+      UserMedicalData medicaldata = new UserMedicalData(
+        userAccount,
+        date,
+        heightInCentimeters,
+        weightInKilograms
+      );
+      userMedicalDataRepository.save(medicaldata);
+    }
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -232,7 +240,12 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @PathVariable("id") int userId
   ) {
-    Account account = AuthenticationAssistant.validateTokenAndUser(accountRepository, jwtSecret, token, userId);
+    Account account = AuthenticationAssistant.validateTokenAndUser(
+      accountRepository,
+      jwtSecret,
+      token,
+      userId
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -261,7 +274,11 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
