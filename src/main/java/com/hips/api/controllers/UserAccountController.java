@@ -289,8 +289,7 @@ public class UserAccountController {
   public ResponseEntity<Void> setProfilePicture(
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
-  )
-    throws Exception {
+  ) {
     Integer accountId;
 
     if (token == null) {
