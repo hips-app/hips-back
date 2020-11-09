@@ -75,4 +75,12 @@ public class SpecialistAccount extends Auditable implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public List<UserAccount> getUserAccounts() {
+        return userAccounts;
+    }
+
+    public void setUserAccounts(List<UserAccount> userAccounts) {
+        this.userAccounts = userAccounts;
+    }
 }

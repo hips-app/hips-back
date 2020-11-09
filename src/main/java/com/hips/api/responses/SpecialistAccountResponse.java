@@ -3,6 +3,9 @@ package com.hips.api.responses;
 import com.hips.api.models.Account;
 import com.hips.api.models.SpecialistAccount;
 import com.hips.api.models.SpecialistType;
+import com.hips.api.models.UserAccount;
+
+import java.util.List;
 
 public class SpecialistAccountResponse {
     //Account
@@ -17,6 +20,8 @@ public class SpecialistAccountResponse {
     private Integer specialistAccountId;
     private String specialistAccountDrescription;
 
+    private List<UserAccount> userAccounts;
+
     public SpecialistAccountResponse(Account account, SpecialistType specialistType, SpecialistAccount specialistAccount) {
         this.accountId=account.getId();
         this.name=account.getFirstName();
@@ -27,6 +32,11 @@ public class SpecialistAccountResponse {
         this.specialistAccountId=specialistAccount.getId();
         this.specialistAccountDrescription=specialistAccount.getDescription();
     }
+
+    public SpecialistAccountResponse(SpecialistAccount specialistAccount) {
+        this.userAccounts = specialistAccount.getUserAccounts();
+    }
+
     public Integer getAccountId() {
         return accountId;
     }
@@ -75,5 +85,13 @@ public class SpecialistAccountResponse {
     }
     public void setDrescription(String drescription) {
         this.specialistAccountDrescription = drescription;
+    }
+
+    public List<UserAccount> getUserAccounts() {
+        return userAccounts;
+    }
+
+    public void setUserAccounts(List<UserAccount> userAccounts) {
+        this.userAccounts = userAccounts;
     }
 }
