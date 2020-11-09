@@ -23,14 +23,18 @@ public class TokenAuthenticationService {
     //this method is empty
   }
 
-  public String getJWTSubject(String token) throws RuntimeException {
-    Claims claims = Jwts
-      .parser()
-      .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecret))
-      .parseClaimsJws(token)
-      .getBody();
+  public String getJWTSubject(String token) {
+    try {
+      Claims claims = Jwts
+        .parser()
+        .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecret))
+        .parseClaimsJws(token)
+        .getBody();
 
-    return claims.getSubject();
+      return claims.getSubject();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public HttpStatus verifyUserToken(String token) {

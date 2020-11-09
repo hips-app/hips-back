@@ -10,15 +10,18 @@ public class AuthenticationAssistant {
 
   private AuthenticationAssistant() {}
 
-  public static String getJWTSubject(String secret, String token)
-    throws RuntimeException {
-    Claims claims = Jwts
-      .parser()
-      .setSigningKey(DatatypeConverter.parseBase64Binary(secret))
-      .parseClaimsJws(token)
-      .getBody();
+  public static String getJWTSubject(String secret, String token) {
+    try {
+      Claims claims = Jwts
+        .parser()
+        .setSigningKey(DatatypeConverter.parseBase64Binary(secret))
+        .parseClaimsJws(token)
+        .getBody();
 
-    return claims.getSubject();
+      return claims.getSubject();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
   public static String createJWT(String secret, Integer id, long ttlMillis) {
