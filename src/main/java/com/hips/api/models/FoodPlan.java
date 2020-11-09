@@ -19,12 +19,12 @@ public class FoodPlan extends Auditable implements Serializable {
     UserGoal userGoal;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     @CreatedDate
     Date startDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false, updatable = false)
+    @Column(nullable = false)
     @CreatedDate
     Date endDate;
 
