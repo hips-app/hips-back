@@ -24,6 +24,49 @@ public class AuthenticationAssistant {
     }
   }
 
+  public static Account validateToken(
+    AccountRepository accountRepository,
+    String token
+  ) {
+    Integer accountId;
+    if (token == null) {
+      return null;
+    }
+    try {
+      accountId =
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
+      return accountRepository.getById(accountId);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static Account validateTokenAndUser(
+    AccountRepository accountRepository,
+    String token,
+    int userId
+  ) {
+    Integer accountId;
+    if (token == null) {
+      return null;
+    }
+    try {
+      accountId =
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
+
+      if (!accountId.equals(userId)) {
+        return null;
+      }
+      return accountRepository.getById(accountId);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
   public static String createJWT(String secret, Integer id, long ttlMillis) {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
