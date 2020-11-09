@@ -113,7 +113,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = validateToken(token);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -156,7 +156,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = validateToken(token);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -235,26 +235,18 @@ public class UserAccountController {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Integer accountId;
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-      if (!accountId.equals(userId)) {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    Account account = AuthenticationAssistant.validateTokenAndUser(accountRepository, token, userId);
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    UserAccount userAccount = userAccountRepository.getByAccountId(accountId);
+    UserAccount userAccount = userAccountRepository.getByAccountId(
+      account.getId()
+    );
     int userAccountId = userAccount.getId();
 
     UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(
@@ -272,7 +264,7 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Account account = validateToken(token);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -292,21 +284,5 @@ public class UserAccountController {
     account.setProfilePicture(urlPicture);
 
     return new ResponseEntity<>(HttpStatus.OK);
-  }
-
-  private Account validateToken(String token) {
-    Integer accountId;
-    if (token == null) {
-      return null;
-    }
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-      return accountRepository.getById(accountId);
-    } catch (Exception e) {
-      return null;
-    }
   }
 }
