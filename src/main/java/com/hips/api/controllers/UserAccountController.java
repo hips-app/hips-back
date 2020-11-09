@@ -113,19 +113,10 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Integer accountId;
-    if (token == null) {
+    Account account = validateToken(token);
+    if(account == null){
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -165,21 +156,12 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Integer accountId;
-    if (token == null) {
+    Account account = validateToken(token);
+    if(account == null){
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
 
-    Account account = accountRepository.getById(accountId);
-    UserAccount userAccount = userAccountRepository.getByAccountId(accountId);
+    UserAccount userAccount = userAccountRepository.getByAccountId(account.getId());
     int userAccountId = userAccount.getId();
     UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(
       userAccountId
@@ -288,20 +270,11 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    Integer accountId;
-
-    if (token == null) {
+    
+    Account account = validateToken(token);
+    if(account == null){
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -319,4 +292,20 @@ public class UserAccountController {
 
     return new ResponseEntity<>(HttpStatus.OK);
   }
+}
+
+private Account validateToken(String token){
+  Integer accountId;
+  if (token == null) {
+    return null;
+  }
+  try {
+    accountId =
+      Integer.parseInt(
+        AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+      );
+  } catch (Exception e) {
+    return Account;
+  }
+  return accountRepository.getById(accountId);
 }
