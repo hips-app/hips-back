@@ -58,7 +58,6 @@ public class UserAccountController {
   public ResponseEntity<LogInResponse> signup(
     @RequestBody Map<String, String> req
   ) {
-    String uid = null;
     String firstName;
     String lastName;
     String email;
@@ -78,7 +77,6 @@ public class UserAccountController {
     String salt = BCrypt.gensalt();
     pass = BCrypt.hashpw(pass, salt);
     Account account = new Account(
-      uid,
       accountType.get(0),
       email,
       firstName,
@@ -313,7 +311,7 @@ public class UserAccountController {
 
     urlPicture = req.get("urlPicture");
 
-    if (urlPicture == null || token == null) {
+    if (urlPicture == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 

@@ -8,8 +8,10 @@ import javax.xml.bind.DatatypeConverter;
 
 public class AuthenticationAssistant {
 
+  private AuthenticationAssistant() {}
+
   public static String getJWTSubject(String secret, String token)
-    throws SignatureException {
+    throws RuntimeException {
     Claims claims = Jwts
       .parser()
       .setSigningKey(DatatypeConverter.parseBase64Binary(secret))
