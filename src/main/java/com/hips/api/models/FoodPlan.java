@@ -35,10 +35,10 @@ public class FoodPlan extends Auditable implements Serializable {
     }
 
     public FoodPlan(UserGoal userGoal, Date startDate, Date endDate, String description) {
-        this.userGoal = userGoal;
-        this.startDate = startDate;
-        this.endDate = endDate;
         this.description = description;
+        this.userGoal = userGoal;
+        this.endDate = endDate;
+        this.startDate = startDate;
     }
 
     public int getId() {
