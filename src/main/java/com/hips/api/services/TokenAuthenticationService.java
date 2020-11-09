@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.lang.String;
 import javax.xml.bind.DatatypeConverter;
 
 import com.hips.api.assistants.AuthenticationAssistant;
@@ -25,6 +24,7 @@ public class TokenAuthenticationService {
     private AccountRepository accountRepository;
 
     public TokenAuthenticationService() {
+        //this method is empty
     }
 
     public String getJWT_Subject(String token) throws SignatureException {

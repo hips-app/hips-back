@@ -22,7 +22,7 @@ import java.util.Date;
 public class NutritionalInformationController {
 
     @Value("${JWT_SECRET}")
-    private String JWT_SECRET;
+    private String jwtSecret;
 
     @Autowired
     private UserAccountRepository userAccountRepository;
@@ -32,8 +32,6 @@ public class NutritionalInformationController {
 
     @Autowired
     private AccountRepository accountRepository;
-
-    private AuthenticationAssistant authenticationAssistant = new AuthenticationAssistant();
 
     @PostMapping("/calories/{id}")
     public ResponseEntity<Void> saveCaloriesDataPoint(@RequestHeader("Authorization") String token, @PathVariable("id") int userId, @RequestBody SaveCaloriesRequest body){
@@ -48,7 +46,7 @@ public class NutritionalInformationController {
 
         Account account;
 
-        Integer accId = Integer.parseInt(authenticationAssistant.getJWT_Subject(JWT_SECRET, token));
+        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(jwtSecret, token));
 
         account = accountRepository.getById(accId);
 

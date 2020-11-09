@@ -23,7 +23,7 @@ public class SubscriptionTypeService {
 
     public List<SubscriptionType> findAll() {
         Iterable<SubscriptionType> it = subscriptionTypeRepository.findAll();
-        List<SubscriptionType> subscriptionTypes = new ArrayList<SubscriptionType>();
+        List<SubscriptionType> subscriptionTypes = new ArrayList<>();
         it.forEach(e -> subscriptionTypes.add(e));
         return subscriptionTypes;
     }

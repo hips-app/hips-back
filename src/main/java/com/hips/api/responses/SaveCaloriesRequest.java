@@ -9,6 +9,7 @@ public class SaveCaloriesRequest implements Serializable {
     Date date;
 
     public SaveCaloriesRequest() {
+        //this method is empty
     }
 
     public double getCalories() {

@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
   @Value("${JWT_SECRET}")
-  private String JWT_SECRET;
+  private String jwtSecret;
+  private static final String ACCOUNTERROR="The account doesn't exist";
 
   @Autowired
   private AccountTokenWhitelistRepository tokenRepository;
@@ -29,22 +30,23 @@ public class AuthController {
 
   @PostMapping
   public ResponseEntity<LogInResponse> login(
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
-    String email, password;
+    String email;
+    String password;
     email = req.get("email");
     password = req.get("password");
     Account account = null;
     account = accountRepository.findByEmail(email);
     if (account == null) {
       return new ResponseEntity<>(
-        new LogInResponse("The account doesn't exist"),
+        new LogInResponse(ACCOUNTERROR),
         HttpStatus.BAD_REQUEST
       );
     }
     if (BCrypt.checkpw(password, account.getPassword())) {
       String token = AuthenticationAssistant.createJWT(
-        JWT_SECRET,
+        jwtSecret,
         account.getId(),
         (long) 1000 * 60 * 60 * 2
       );
@@ -83,23 +85,21 @@ public class AuthController {
 
   @PostMapping("/login-with-google")
   public ResponseEntity<LogInResponse> oauthLogin(
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
-    // TODO auth validation
-    String email, uid;
+    String email;
+    String uid;
     email = req.get("email");
     uid = req.get("uid");
     Account account = null;
     account = accountRepository.findByEmail(email);
     if (account == null) {
       return new ResponseEntity<>(
-        new LogInResponse("The account doesn't exist"),
+        new LogInResponse(ACCOUNTERROR),
         HttpStatus.BAD_REQUEST
       );
     }
     if (account.getUid() == null) {
-      //account.setUid(uid);
-      //accountRepository.save(account);
     } else if (!account.getUid().equals(uid)) {
       return new ResponseEntity<>(
         new LogInResponse("Unautorized"),
@@ -107,7 +107,7 @@ public class AuthController {
       );
     }
     String token = AuthenticationAssistant.createJWT(
-      JWT_SECRET,
+      jwtSecret,
       account.getId(),
       (long) 1000 * 60 * 60 * 2
     );
@@ -122,18 +122,17 @@ public class AuthController {
   public ResponseEntity<LogInResponse> loginWithToken(
     @RequestHeader("Authorization") String token
   ) {
-    // TODO token validation
     Integer accountId;
     if (token == null) {
       return new ResponseEntity<>(
-        new LogInResponse("The account doesn't exist"),
+        new LogInResponse(ACCOUNTERROR),
         HttpStatus.BAD_REQUEST
       );
     }
     try {
       accountId =
         Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+          AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
         );
     } catch (
       SignatureException | NumberFormatException | ExpiredJwtException e

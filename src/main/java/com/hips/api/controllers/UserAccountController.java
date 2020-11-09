@@ -5,17 +5,11 @@ import com.hips.api.models.*;
 import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
 import com.hips.api.responses.ProfileResponse;
-import com.hips.api.responses.SelectExercisesResponse;
-import com.hips.api.responses.UserGoalResponse;
 import com.hips.api.services.TokenAuthenticationService;
 import io.jsonwebtoken.*;
-import java.security.Key;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
-import javax.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,7 +28,7 @@ public class UserAccountController {
   static final String PARAM_PASSWORD = "password";
 
   @Value("${JWT_SECRET}")
-  private String JWT_SECRET;
+  private String jwtSecret;
 
   @Autowired
   private UserAccountRepository userAccountRepository;
@@ -56,16 +50,19 @@ public class UserAccountController {
 
   @Autowired
   private SportPlanRepository sportPlanRepository;
-  
+
 
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
   @PostMapping
   public ResponseEntity<LogInResponse> signup(
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
     String uid = null;
-    String firstName, lastName, email, pass;
+    String firstName;
+    String lastName;
+    String email;
+    String pass;
     firstName = req.get(PARAM_FIRST_NAME);
     lastName = req.get(PARAM_LAST_NAME);
     email = req.get(PARAM_EMAIL);
@@ -101,7 +98,7 @@ public class UserAccountController {
     }
 
     String token = AuthenticationAssistant.createJWT(
-      JWT_SECRET,
+      jwtSecret,
       account.getId(),
       (long)1000 * 60 * 2
     );
@@ -116,7 +113,7 @@ public class UserAccountController {
   @PostMapping("/goals")
   public ResponseEntity<Void> setGoal(
     @RequestHeader("Authorization") String token,
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   )
     throws Exception {
     Integer accountId;
@@ -126,7 +123,7 @@ public class UserAccountController {
     try {
       accountId =
         Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+          AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
         );
     } catch (ExpiredJwtException e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -152,7 +149,7 @@ public class UserAccountController {
     UserGoal userGoal = new UserGoal(userAccount, description, expirationDate);
     userGoal = userGoalRepository.save(userGoal);
     SportPlan sportPlan = new SportPlan(userGoal, new Date(), expirationDate, description);
-    sportPlan = sportPlanRepository.save(sportPlan);
+    sportPlanRepository.save(sportPlan);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -160,7 +157,7 @@ public class UserAccountController {
   @Transactional
   public ResponseEntity<Void> updatePersonalInfo(
     @RequestHeader("Authorization") String token,
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
     Integer accountId;
     if (token == null) {
@@ -169,12 +166,12 @@ public class UserAccountController {
     try {
       accountId =
         Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+          AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
         );
     } catch (
       SignatureException | NumberFormatException | ExpiredJwtException e
     ) {
-      e.printStackTrace();
+      //e.printStackTrace();
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
@@ -205,7 +202,7 @@ public class UserAccountController {
     try {
       date = dateFormat.parse(birthDate);
     } catch (Exception e) {
-      e.printStackTrace();
+      //e.printStackTrace();
     }
     if (
       firstName != null &&
@@ -242,7 +239,7 @@ public class UserAccountController {
 
     return new ResponseEntity<>(HttpStatus.OK);
   }
-  
+
   @GetMapping("/{id}/profile")
   public ResponseEntity<ProfileResponse> checkProfile(
     @RequestHeader("Authorization") String token,
@@ -254,7 +251,7 @@ public class UserAccountController {
     Integer accountId;
     try {
       accountId = Integer.parseInt(
-        AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+        AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
       );
       if (!accountId.equals(userId)) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -262,7 +259,7 @@ public class UserAccountController {
     } catch (
       SignatureException | NumberFormatException | ExpiredJwtException e
     ) {
-      e.printStackTrace();
+      //e.printStackTrace();
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
@@ -287,7 +284,7 @@ public class UserAccountController {
   @PostMapping("/profile-picture")
   public ResponseEntity<Void> setProfilePicture(
           @RequestHeader("Authorization") String token,
-          @RequestBody HashMap<String, String> req
+          @RequestBody Map<String, String> req
   )
           throws Exception {
     Integer accountId;
@@ -298,7 +295,7 @@ public class UserAccountController {
     try {
       accountId =
               Integer.parseInt(
-                      AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+                      AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
               );
     } catch (ExpiredJwtException e) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

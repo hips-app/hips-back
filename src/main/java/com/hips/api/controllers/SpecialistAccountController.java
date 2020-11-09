@@ -1,11 +1,9 @@
 package com.hips.api.controllers;
 
 import com.hips.api.models.*;
-import com.hips.api.repositories.AccountRepository;
 import com.hips.api.repositories.UserGoalRepository;
 import com.hips.api.repositories.UserMedicalDataRepository;
 import com.hips.api.responses.ProfileResponse;
-import com.hips.api.responses.SpecialistAccountResponse;
 import com.hips.api.services.SpecialistAccountService;
 import com.hips.api.services.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +26,6 @@ public class SpecialistAccountController {
 
     @Autowired
     private SpecialistAccountService specialistAccountService;
-
-
-    @Autowired
-    private AccountRepository accountRepository;
 
     @Autowired
     private UserGoalRepository userGoalRepository;

@@ -3,9 +3,8 @@ package com.hips.api.controllers;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 import com.hips.api.assistants.AuthenticationAssistant;
 import com.hips.api.models.Account;
@@ -43,7 +42,7 @@ import io.jsonwebtoken.*;
 
 public class UserSubscriptionController {
   @Value("${JWT_SECRET}")
-  private String JWT_SECRET;
+  private String jwtSecret;
 
   @Autowired
   private SpecialistAccountService specialistAccountService;
@@ -64,14 +63,14 @@ public class UserSubscriptionController {
   private UserSubscriptionService userSubscriptionService;
 
   @PostMapping(value = "/{id}/payment-method")
-  public ResponseEntity<Void> payment(@RequestHeader("Authorization") String token, @RequestBody HashMap<String,Boolean>req,@PathVariable("id") int userId) {
+  public ResponseEntity<Void> payment(@RequestHeader("Authorization") String token, @RequestBody Map<String,Boolean>req,@PathVariable("id") int userId) {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     Integer accountId;
     try {
       accountId = Integer.parseInt(
-        AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+        AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
       );
       if (!accountId.equals(userId)) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -87,7 +86,7 @@ public class UserSubscriptionController {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     UserAccount userAccount = userAccountService.findByAccount(account);
-    if (userAccountService.hasPayment(userAccount)) {
+    if (Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
         return new ResponseEntity<>(HttpStatus.FOUND);
     }
     userAccount.setPaymentMethod(req.get("paymentMethod"));
@@ -95,14 +94,14 @@ public class UserSubscriptionController {
       return new ResponseEntity<>(HttpStatus.OK);
   }
   @PostMapping(value = "/select-subscription")
-  public ResponseEntity<Void> selectSubscription(@RequestHeader("Authorization") String token, @RequestBody HashMap<String, String> req) {
+  public ResponseEntity<Void> selectSubscription(@RequestHeader("Authorization") String token, @RequestBody Map<String, String> req) {
      if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     Integer accountId;
     try {
       accountId = Integer.parseInt(
-        AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+        AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
       );
     } catch (
       SignatureException | NumberFormatException | ExpiredJwtException e
@@ -118,7 +117,7 @@ public class UserSubscriptionController {
     SubscriptionType subscriptionType = subscriptionTypesService.findById(Integer.parseInt(req.get("subscriptionTypeId")));
     SpecialistAccount specialistAccount = specialistAccountService.findById(Integer.parseInt(req.get("specialistAccountId")));
     UserAccount userAccount= userAccountService.findByAccount(account);
-    if (!userAccountService.hasPayment(userAccount)) {
+    if (!Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
     if (userAccount.getSpecialistAccount() == null) {
@@ -170,14 +169,14 @@ public class UserSubscriptionController {
   }
 
   @PostMapping(value = "/escoger-profesional")
-  public ResponseEntity<Void> escogerProfesional(@RequestHeader("Authorization") String token,@RequestBody HashMap<String, String> req) {
+  public ResponseEntity<Void> escogerProfesional(@RequestHeader("Authorization") String token,@RequestBody Map<String, String> req) {
       if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     Integer accountId;
     try {
       accountId = Integer.parseInt(
-        AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+        AuthenticationAssistant.getJWT_Subject(jwtSecret, token)
       );
     } catch (
       SignatureException | NumberFormatException | ExpiredJwtException e
@@ -191,7 +190,7 @@ public class UserSubscriptionController {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
     UserAccount userAccount= userAccountService.findByAccount(account);
-    if (!userAccountService.hasPayment(userAccount)) {
+    if (!Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
     Integer specialistAccountId =Integer.parseInt(req.get("specialistAccountId"));
