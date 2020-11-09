@@ -66,4 +66,19 @@ VALUES
     ('saturday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
     ('sunday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
+INSERT INTO user_medical_data
+    (id,  is_active, created_at, updated_at,height_in_centimeters,weight_in_kilograms,birth_day,user_account_user_account_id)
+VALUES
+    (2,true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 150,54, TIMESTAMP '1998-05-01 11:00:00', 2)
+;
 
+INSERT INTO user_subscription
+    (user_subscription_id, is_active, created_at, updated_at, expiration_date, subscription_type_id,user_account_id )
+VALUES
+    (2, true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 1, 2)
+;
+UPDATE user_account SET payment_method= true
+    WHERE user_account_id = 2;
+
+UPDATE user_account SET specialist_account_id= 1
+        WHERE user_account_id = 2;
