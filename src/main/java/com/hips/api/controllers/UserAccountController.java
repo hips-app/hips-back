@@ -114,7 +114,7 @@ public class UserAccountController {
     @RequestBody Map<String, String> req
   ) {
     Account account = validateToken(token);
-    if(account == null){
+    if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -157,11 +157,13 @@ public class UserAccountController {
     @RequestBody Map<String, String> req
   ) {
     Account account = validateToken(token);
-    if(account == null){
+    if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    UserAccount userAccount = userAccountRepository.getByAccountId(account.getId());
+    UserAccount userAccount = userAccountRepository.getByAccountId(
+      account.getId()
+    );
     int userAccountId = userAccount.getId();
     UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(
       userAccountId
@@ -270,9 +272,8 @@ public class UserAccountController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    
     Account account = validateToken(token);
-    if(account == null){
+    if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
@@ -292,20 +293,20 @@ public class UserAccountController {
 
     return new ResponseEntity<>(HttpStatus.OK);
   }
-}
 
-private Account validateToken(String token){
-  Integer accountId;
-  if (token == null) {
-    return null;
+  private Account validateToken(String token) {
+    Integer accountId;
+    if (token == null) {
+      return null;
+    }
+    try {
+      accountId =
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
+      return accountRepository.getById(accountId);
+    } catch (Exception e) {
+      return null;
+    }
   }
-  try {
-    accountId =
-      Integer.parseInt(
-        AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-      );
-  } catch (Exception e) {
-    return Account;
-  }
-  return accountRepository.getById(accountId);
 }
