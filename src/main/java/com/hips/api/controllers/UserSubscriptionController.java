@@ -101,16 +101,11 @@ public class UserSubscriptionController {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Integer accountId;
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    
+    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

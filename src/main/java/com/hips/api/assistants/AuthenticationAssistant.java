@@ -28,6 +28,7 @@ public class AuthenticationAssistant {
 
   public static Account validateToken(
     AccountRepository accountRepository,
+    String jwtSecret,
     String token
   ) {
     Integer accountId;
@@ -47,6 +48,7 @@ public class AuthenticationAssistant {
 
   public static Account validateTokenAndUser(
     AccountRepository accountRepository,
+    String jwtSecret,
     String token,
     int userId
   ) {
