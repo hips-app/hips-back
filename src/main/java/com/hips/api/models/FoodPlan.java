@@ -15,18 +15,18 @@ public class FoodPlan extends Auditable implements Serializable {
     @Column(name = "id", updatable = false, nullable = false)
     int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    UserGoal userGoal;
-
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @CreatedDate
     Date startDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     @CreatedDate
     Date endDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    UserGoal userGoal;
 
     @Column(length = 500)
     String description;
@@ -49,20 +49,20 @@ public class FoodPlan extends Auditable implements Serializable {
         this.id = id;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public UserGoal getUserGoal() {
         return userGoal;
     }
 
     public void setUserGoal(UserGoal userGoal) {
         this.userGoal = userGoal;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
     }
 
     public Date getEndDate() {
@@ -73,11 +73,11 @@ public class FoodPlan extends Auditable implements Serializable {
         this.endDate = endDate;
     }
 
-    public String getDescription() {
-        return description;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
     }
 }
