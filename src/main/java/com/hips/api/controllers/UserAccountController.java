@@ -137,8 +137,12 @@ public class UserAccountController {
     Date expirationDate;
 
     description = req.get("description");
-    expirationDate =
-      new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
+    try {
+      expirationDate =
+        new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
     if (description == null || expirationDate == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -285,7 +289,8 @@ public class UserAccountController {
   public ResponseEntity<Void> setProfilePicture(
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
-  ) {
+  )
+    throws Exception {
     Integer accountId;
 
     if (token == null) {
