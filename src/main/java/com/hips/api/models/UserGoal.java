@@ -30,25 +30,32 @@ public class UserGoal extends Auditable implements Serializable {
     }
 
     public UserGoal( UserAccount userAccount, String description, Date expirationDate) {
-        this.userAccount = userAccount;
+        this.expirationDate = expirationDate;
         this.description = description;
+        this.userAccount = userAccount;
+    }
+
+
+    public Date getExpirationDate() {
+        return expirationDate;
+    }
+
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public UserAccount getUserAccount() {
         return userAccount;
     }
 
     public void setUserAccount(UserAccount userAccount) {
         this.userAccount = userAccount;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDescription() {
@@ -59,13 +66,6 @@ public class UserGoal extends Auditable implements Serializable {
         this.description = description;
     }
 
-    public Date getExpirationDate() {
-        return expirationDate;
-    }
-
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
-    }
 
     @Override
     public String toString() {

@@ -13,31 +13,13 @@ public class UserGoalResponse  implements Serializable {
     String description;
     Date expirationDate;
 
-    public UserGoalResponse() {
-    }
-
     public UserGoalResponse(UserGoal userGoal) {
         this.id = userGoal.getId();
-        this.userAccount = userGoal.getUserAccount();
-        this.description = userGoal.getDescription();
         this.expirationDate = userGoal.getExpirationDate();
+        this.description = userGoal.getDescription();
+        this.userAccount = userGoal.getUserAccount();
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public UserAccount getUserAccount() {
-        return userAccount;
-    }
-
-    public void setUserAccount(UserAccount userAccount) {
-        this.userAccount = userAccount;
-    }
 
     public String getDescription() {
         return description;
@@ -46,6 +28,21 @@ public class UserGoalResponse  implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public Date getExpirationDate() {
         return expirationDate;

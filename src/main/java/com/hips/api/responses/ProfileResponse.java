@@ -19,52 +19,39 @@ public class ProfileResponse  implements Serializable {
     int heightInCentimeters;
     int weightInKilograms;
 
-    public ProfileResponse() {
-    }
-
     public ProfileResponse(Account account, UserGoal userGoal, UserMedicalData userMedicalData) {
-        this.id = account.getId();
         this.firstName = account.getFirstName();
-        this.lastName = account.getLastName();
+        this.id = account.getId();
         this.email = account.getEmail();
-        this.profilePicture = account.getProfilePicture();
         this.goalDescription = userGoal.getDescription();
-        this.goalExpirationDate = userGoal.getExpirationDate();
+        this.profilePicture = account.getProfilePicture();
         this.birthDay = userMedicalData.getBirthDay();
+        this.lastName = account.getLastName();
+        this.goalExpirationDate = userGoal.getExpirationDate();
         this.heightInCentimeters = userMedicalData.getHeightInCentimeters();
         this.weightInKilograms = userMedicalData.getWeightInKilograms();
     }
 
-    public Integer getId() {
-        return id;
-    }
 
     public void setId(Integer id) {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
 
     public String getLastName() {
         return lastName;
     }
 
+    public Integer getId() {
+        return id;
+    }
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getProfilePicture() {
@@ -75,12 +62,15 @@ public class ProfileResponse  implements Serializable {
         this.profilePicture = profilePicture;
     }
 
-    public String getGoalDescription() {
-        return goalDescription;
+    public String getFirstName() {
+        return firstName;
+    }
+    public String getEmail() {
+        return email;
     }
 
-    public void setGoalDescription(String goalDescription) {
-        this.goalDescription = goalDescription;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Date getGoalExpirationDate() {
@@ -91,6 +81,13 @@ public class ProfileResponse  implements Serializable {
         this.goalExpirationDate = goalExpirationDate;
     }
 
+    public String getGoalDescription() {
+        return goalDescription;
+    }
+
+    public void setGoalDescription(String goalDescription) {
+        this.goalDescription = goalDescription;
+    }
     public Date getBirthDay() {
         return birthDay;
     }
