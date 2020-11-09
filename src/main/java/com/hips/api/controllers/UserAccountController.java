@@ -284,4 +284,41 @@ public class UserAccountController {
       HttpStatus.OK
     );
   }
+  @PostMapping("/profile-picture")
+  public ResponseEntity<Void> setProfilePicture(
+          @RequestHeader("Authorization") String token,
+          @RequestBody HashMap<String, String> req
+  )
+          throws Exception {
+    Integer accountId;
+
+    if (token == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    try {
+      accountId =
+              Integer.parseInt(
+                      AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
+              );
+    } catch (ExpiredJwtException e) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+    Account account = accountRepository.getById(accountId);
+
+    if (account.getType().getId() != 1) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    String urlPicture;
+
+    urlPicture = req.get("urlPicture");
+
+    if (urlPicture == null || token == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    account.setProfilePicture(urlPicture);
+
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
 }
