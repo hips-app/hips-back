@@ -206,7 +206,7 @@ public class UserAccountController {
       weightInKilograms == 0 ||
       date == null
     ) {
-      return new ResponseEntity<>(HttpStatus.OK);
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     if (!account.getFirstName().equals(firstName)) {
       account.setFirstName(firstName);
