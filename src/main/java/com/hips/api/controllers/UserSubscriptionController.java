@@ -68,19 +68,10 @@ public class UserSubscriptionController {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Integer accountId;
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-      if (!accountId.equals(userId)) {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-      }
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    Account account = AuthenticationAssistant.validateTokenAndUser(accountRepository, jwtSecret, token, userId);
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = accountRepository.getById(accountId);
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
@@ -98,9 +89,6 @@ public class UserSubscriptionController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    if (token == null) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
     
     Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
     if (account == null) {
@@ -190,16 +178,10 @@ public class UserSubscriptionController {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Integer accountId;
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
-        );
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
