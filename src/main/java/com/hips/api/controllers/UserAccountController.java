@@ -52,6 +52,9 @@ public class UserAccountController {
   @Autowired
   private SportPlanRepository sportPlanRepository;
 
+  @Autowired
+  private SpecialistAccountRepository specialistAccountRepository;
+
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
   @PostMapping
@@ -98,7 +101,7 @@ public class UserAccountController {
     String token = AuthenticationAssistant.createJWT(
       jwtSecret,
       account.getId(),
-      (long) 1000 * 60 * 2
+      10
     );
 
     tokenRepository.save(new AccountTokenWhitelist(account, token));
@@ -264,7 +267,7 @@ public class UserAccountController {
     );
     UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccountId);
     return new ResponseEntity<>(
-      new ProfileResponse(account, userGoal, userMedicalData),
+      new ProfileResponse(account, userAccount, userGoal, userMedicalData),
       HttpStatus.OK
     );
   }
@@ -296,6 +299,39 @@ public class UserAccountController {
     }
 
     account.setProfilePicture(urlPicture);
+    accountRepository.save(account);
+
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PostMapping("/specialist")
+  public ResponseEntity<Void> setSpecialist(
+    @RequestHeader("Authorization") String token,
+    @RequestBody Map<String, String> req
+  ) {
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    if (account.getType().getId() != 1) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+    int specialistId = Integer.parseInt(req.get("specialistId"));
+
+    SpecialistAccount specialistAccount = specialistAccountRepository.getById(
+      specialistId
+    );
+    UserAccount userAccount = userAccountRepository.getByAccountId(
+      account.getId()
+    );
+
+    userAccount.setSpecialistAccount(specialistAccount);
+    userAccountRepository.save(userAccount);
 
     return new ResponseEntity<>(HttpStatus.OK);
   }

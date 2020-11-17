@@ -1,7 +1,11 @@
 package com.hips.api.models;
 
+import org.springframework.data.annotation.CreatedDate;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 @Entity
 @Table(name = "daily_sport_plan")
@@ -18,16 +22,21 @@ public class DailySportPlan extends Auditable implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     WeekDay weekDay;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    Calendar date;
+
     @Column(length = 500)
     String description;
 
     public DailySportPlan() {
     }
 
-    public DailySportPlan(SportPlan sportPlan, WeekDay weekDay, String description) {
+    public DailySportPlan(SportPlan sportPlan, WeekDay weekDay, String description, Calendar date) {
         this.sportPlan = sportPlan;
         this.weekDay = weekDay;
         this.description = description;
+        this.date = date;
     }
 
     public int getId() {
@@ -60,6 +69,14 @@ public class DailySportPlan extends Auditable implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Calendar getDate() {
+        return date;
+    }
+
+    public void setDate(Calendar date) {
+        this.date = date;
     }
 
     @Override

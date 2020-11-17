@@ -15,13 +15,22 @@ VALUES
 INSERT INTO account
     (type_id, email, first_name, last_name, password, salt, is_active, created_at, updated_at)
 VALUES
-    (2, 's@test.com', 'Sportacus', 'Helth', '$2a$10$PpeMuMYmKOYzh7bVlmTEieySEVWE.mwpwDfZ1uiBn/9kAOr/WuE8S', '$2a$10$PpeMuMYmKOYzh7bVlmTEie', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    (2, 's@test.com', 'Sportacus', 'Helth', '$2a$10$PpeMuMYmKOYzh7bVlmTEieySEVWE.mwpwDfZ1uiBn/9kAOr/WuE8S', '$2a$10$PpeMuMYmKOYzh7bVlmTEie', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (2, 's2@test.com', 'Super', 'Man', '$2a$10$PpeMuMYmKOYzh7bVlmTEieySEVWE.mwpwDfZ1uiBn/9kAOr/WuE8S', '$2a$10$PpeMuMYmKOYzh7bVlmTEie', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (1, 'a@test.com', 'Test', 'User', '$2a$10$PpeMuMYmKOYzh7bVlmTEieySEVWE.mwpwDfZ1uiBn/9kAOr/WuE8S', '$2a$10$PpeMuMYmKOYzh7bVlmTEie', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
 INSERT INTO specialist_account
     (account_id, specialist_type_id, document_number, description, is_active, created_at, updated_at)
 VALUES
-    (1, 1, '103212345', 'Doctor in nutrition', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    (1, 1, '103212345', 'Doctor in nutrition', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+    (2, 2, '103212346', 'Doctor in sport', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+;
+
+INSERT INTO user_account
+    (account_id, payment_method, auto_renew_subscription, is_active, created_at, updated_at)
+VALUES
+    (3, false, false, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 
 INSERT INTO subscription_type (subscription_type_name,subscription_type_description,subscription_type_price,is_active, created_at, updated_at)
@@ -69,13 +78,13 @@ VALUES
 INSERT INTO user_medical_data
     (id,  is_active, created_at, updated_at,height_in_centimeters,weight_in_kilograms,birth_day,user_account_user_account_id)
 VALUES
-    (2,true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 150,54, TIMESTAMP '1998-05-01 11:00:00', 2)
+    (2,true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 150,54, CURRENT_TIMESTAMP, 1)
 ;
 
 INSERT INTO user_subscription
     (user_subscription_id, is_active, created_at, updated_at, expiration_date, subscription_type_id,user_account_id )
 VALUES
-    (2, true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 1, 2)
+    (2, true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 1, 1)
 ;
 UPDATE user_account SET payment_method= true
     WHERE user_account_id = 2;

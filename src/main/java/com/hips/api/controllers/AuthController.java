@@ -50,7 +50,7 @@ public class AuthController {
       String token = AuthenticationAssistant.createJWT(
         jwtSecret,
         account.getId(),
-        (long) 1000 * 60 * 60 * 2
+        10
       );
       tokenRepository.save(new AccountTokenWhitelist(account, token));
       return new ResponseEntity<>(
@@ -99,7 +99,10 @@ public class AuthController {
         HttpStatus.BAD_REQUEST
       );
     }
-    if (account.getUid() == null || !account.getUid().equals(uid)) {
+    if (account.getUid() == null) {
+      account.setUid(uid);
+      accountRepository.save(account);
+    } else if (!account.getUid().equals(uid)) {
       return new ResponseEntity<>(
         new LogInResponse("Unautorized"),
         HttpStatus.BAD_REQUEST
@@ -108,7 +111,7 @@ public class AuthController {
     String token = AuthenticationAssistant.createJWT(
       jwtSecret,
       account.getId(),
-      (long) 1000 * 60 * 60 * 2
+      10
     );
     tokenRepository.save(new AccountTokenWhitelist(account, token));
     return new ResponseEntity<>(

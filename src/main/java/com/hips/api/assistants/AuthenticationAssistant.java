@@ -1,12 +1,12 @@
 package com.hips.api.assistants;
+
+import com.hips.api.models.Account;
+import com.hips.api.repositories.AccountRepository;
 import io.jsonwebtoken.*;
 import java.security.Key;
 import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-
-import com.hips.api.models.Account;
-import com.hips.api.repositories.AccountRepository;
 
 public class AuthenticationAssistant {
 
@@ -71,11 +71,10 @@ public class AuthenticationAssistant {
     }
   }
 
-  public static String createJWT(String secret, Integer id, long ttlMillis) {
+  public static String createJWT(String secret, Integer id, long hours) {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-    long nowMillis = System.currentTimeMillis();
-    Date now = new Date(nowMillis);
+    Date now = new Date();
 
     byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secret);
     Key signingKey = new SecretKeySpec(
@@ -89,9 +88,8 @@ public class AuthenticationAssistant {
       .setSubject(id.toString())
       .signWith(signatureAlgorithm, signingKey);
 
-    if (ttlMillis > 0) {
-      long expMillis = nowMillis + ttlMillis;
-      Date exp = new Date(expMillis);
+    if (hours > 0) {
+      Date exp = Date.from(new Date().toInstant().plusSeconds(hours * 60 * 60));
       builder.setExpiration(exp);
     }
 
