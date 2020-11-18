@@ -91,3 +91,36 @@ UPDATE user_account SET payment_method= true
 
 UPDATE user_account SET specialist_account_id= 1
         WHERE user_account_id = 2;
+
+INSERT INTO user_goal
+    (created_at ,is_active , updated_at , description , expiration_date , user_account_user_account_id)
+VALUES
+    (CURRENT_TIMESTAMP,true,CURRENT_TIMESTAMP,'Bajar de peso', '2020-12-17', 1)
+;
+INSERT INTO sport_plan
+    (created_at , is_active , updated_at , description , end_date , start_date , user_goal_id  )
+VALUES
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,'descripcion sport plan','2020-12-17',CURRENT_TIMESTAMP,1)
+;
+INSERT INTO daily_sport_plan
+    (created_at , is_active , updated_at , date , description , sport_plan_id , week_day_id)
+VALUES
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-16','monday',1,1),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-17','tuesday',1,2),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-18','wednesday',1,3),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-19','thursday',1,4),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-20','friday',1,5),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-21','saturday',1,6),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP, '2020-11-22','sunday', 1,7)
+;
+INSERT INTO planned_exercise
+    (created_at , is_active , updated_at ,checked ,repetitions_amount , series_amount , daily_sport_plan_id , physical_exercise_id)
+VALUES
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,false,10,3,1,1),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,false,10,3,2,2),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,false,10,3,3,3),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,false,10,3,4,4),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,true,10,3,5,5),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,true,10,3,6,6),
+    (CURRENT_TIMESTAMP,true, CURRENT_TIMESTAMP,false,10,3,7,7)
+    ;
