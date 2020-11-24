@@ -89,7 +89,7 @@ public class UserSubscriptionController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-    
+
     Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -108,17 +108,19 @@ public class UserSubscriptionController {
     if (!Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
+    System.out.println("name: "+account.getFirstName());
     if (userAccount.getSpecialistAccount() == null) {
       userAccount.setSpecialistAccount(specialistAccount);
       userAccountService.save(userAccount);
     } else {
+        System.out.println("specialistAccount: "+ userAccount.getSpecialistAccount().getId());
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-    String expirationDate = req.get("expirationDate");
+    String initDate = req.get("initialDate");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date date = null;
     try {
-      date = dateFormat.parse(expirationDate);
+      date = dateFormat.parse(initDate);
     } catch (Exception e) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

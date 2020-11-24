@@ -32,9 +32,9 @@ public class UserSubscriptionService {
         date = newDate.getTime();
         return date;
     }
-    public void createSubscription(UserAccount userAccount, SubscriptionType subscriptionType, Date expirationDate) {
-        expirationDate = createDate(expirationDate);
-        UserSubscription userSubscription = new UserSubscription(subscriptionType, userAccount, expirationDate);
+    public void createSubscription(UserAccount userAccount, SubscriptionType subscriptionType, Date initDate) {
+        initDate = createDate(initDate);
+        UserSubscription userSubscription = new UserSubscription(subscriptionType, userAccount, initDate);
         save(userSubscription);
     }
     public UserSubscription findByUserAccount(UserAccount userAccount) {
