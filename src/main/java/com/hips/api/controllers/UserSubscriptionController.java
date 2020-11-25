@@ -114,10 +114,8 @@ public class UserSubscriptionController {
     if (!Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
-    if (userAccount.getSpecialistAccount()!= null) {
-        if (userAccount.getSpecialistAccount().getId() != specialistAccount.getId()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
+    if (userAccount.getSpecialistAccount()!= null && userAccount.getSpecialistAccount().getId() != specialistAccount.getId()) {
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
       userAccount.setSpecialistAccount(specialistAccount);
       userAccountService.save(userAccount);
