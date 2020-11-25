@@ -82,9 +82,9 @@ VALUES
 ;
 
 INSERT INTO user_subscription
-    (user_subscription_id, is_active, created_at, updated_at, expiration_date, subscription_type_id,user_account_id )
+    (is_active, created_at, updated_at, expiration_date, subscription_type_id,user_account_id )
 VALUES
-    (2, true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 1, 1)
+    (true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 1, 1)
 ;
 UPDATE user_account SET payment_method= true
     WHERE user_account_id = 2;
