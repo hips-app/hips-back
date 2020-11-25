@@ -1,6 +1,7 @@
 package com.hips.api.responses;
 
 import com.hips.api.models.Account;
+import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserGoal;
 import com.hips.api.models.UserMedicalData;
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class ProfileResponse implements Serializable {
 
   public ProfileResponse(
     Account account,
+    UserAccount userAccount,
     UserGoal userGoal,
     UserMedicalData userMedicalData
   ) {
