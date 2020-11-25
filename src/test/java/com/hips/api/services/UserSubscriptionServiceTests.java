@@ -1,6 +1,5 @@
 package com.hips.api.services;
 
-import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserSubscription;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
@@ -11,7 +10,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
-public class UserSubscriptionServiceTests {
+class UserSubscriptionServiceTests {
 
     @Autowired
     private UserSubscriptionService userSubscriptionService;

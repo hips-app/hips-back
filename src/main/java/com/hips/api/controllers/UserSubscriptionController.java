@@ -17,7 +17,6 @@ import com.hips.api.services.SubscriptionTypeService;
 import com.hips.api.services.TokenAuthenticationService;
 import com.hips.api.services.UserAccountService;
 import com.hips.api.services.UserSubscriptionService;
-import io.jsonwebtoken.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;

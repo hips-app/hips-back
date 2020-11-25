@@ -266,7 +266,7 @@ public class UserAccountController {
     );
     UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccountId);
     return new ResponseEntity<>(
-      new ProfileResponse(account, userAccount, userGoal, userMedicalData),
+      new ProfileResponse(account, userGoal, userMedicalData),
       HttpStatus.OK
     );
   }

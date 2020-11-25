@@ -64,7 +64,6 @@ public class SpecialistAccountController {
 
       ProfileResponse account1 = new ProfileResponse(
         account,
-        userAccount,
         userGoal,
         userMedicalData
       );
