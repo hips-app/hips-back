@@ -69,6 +69,12 @@ public class UserAccount extends Auditable implements Serializable {
     public void setSpecialistAccount(SpecialistAccount specialistAccount) {
         this.specialistAccount = specialistAccount;
     }
+    public List<UserSubscription> getUserSubscriptions() {
+        return userSubscriptions;
+    }
+    public void setUserSubscriptions(List<UserSubscription> userSubscriptions) {
+        this.userSubscriptions = userSubscriptions;
+    }
 
     @Override
     public String toString() {
