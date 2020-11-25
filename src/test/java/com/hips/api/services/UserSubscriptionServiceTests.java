@@ -1,15 +1,13 @@
 package com.hips.api.services;
 
+import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserSubscription;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -30,7 +28,7 @@ public class UserSubscriptionServiceTests {
     }
 
     @Test
-    void findById() {
+    void findUserSubscriptionById() {
         UserSubscription response = userSubscriptionService.findById(1);
         Assertions.assertNotNull(response);
         Assertions.assertEquals(1, response.getId());
