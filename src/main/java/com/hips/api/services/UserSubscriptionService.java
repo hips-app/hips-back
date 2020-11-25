@@ -29,8 +29,7 @@ public class UserSubscriptionService {
         Calendar newDate= Calendar.getInstance();
         newDate.setTime(date);
         newDate.add(Calendar.DAY_OF_MONTH, 30);
-        date = newDate.getTime();
-        return date;
+        return newDate.getTime();
     }
     public void createSubscription(UserAccount userAccount, SubscriptionType subscriptionType, Date expirationDate) {
         expirationDate = createDate(expirationDate);
