@@ -6,7 +6,6 @@ import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
 import com.hips.api.responses.ProfileResponse;
 import com.hips.api.services.TokenAuthenticationService;
-import io.jsonwebtoken.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.transaction.Transactional;

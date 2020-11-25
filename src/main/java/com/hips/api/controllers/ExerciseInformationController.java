@@ -13,6 +13,7 @@ import com.hips.api.repositories.SportPlanRepository;
 import com.hips.api.repositories.UserAccountRepository;
 import com.hips.api.repositories.UserGoalRepository;
 import com.hips.api.responses.SaveExerciseSessionRequest;
+import com.hips.api.services.PlannedExerciseService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,6 +44,9 @@ public class ExerciseInformationController {
 
     @Autowired
     private PlannedExerciseRepository plannedExerciseRepository;
+
+    @Autowired
+    private PlannedExerciseService plannedExerciseService;
 
     @Autowired
     private UserGoalRepository userGoalRepository;
@@ -112,7 +116,7 @@ public class ExerciseInformationController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     SportPlan sportPlan = sportPlanRepository.getByUserGoal(userGoal);
-    double percent = plannedExerciseRepository.getUserExerciseProgress(sportPlan.getId());
-    return new ResponseEntity<Double>(percent , HttpStatus.OK);
+    double percent = plannedExerciseService.getUserExerciseProgress(sportPlan.getId());
+    return new ResponseEntity<>(percent , HttpStatus.OK);
   }
 }

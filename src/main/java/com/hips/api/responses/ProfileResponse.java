@@ -1,7 +1,6 @@
 package com.hips.api.responses;
 
 import com.hips.api.models.Account;
-import com.hips.api.models.SpecialistAccount;
 import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserGoal;
 import com.hips.api.models.UserMedicalData;
