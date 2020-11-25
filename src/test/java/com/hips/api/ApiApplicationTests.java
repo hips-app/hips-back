@@ -10,6 +10,6 @@ class ApiApplicationTests {
 	@Test
 	void contextLoads() {
 
-		Assertions.assertEquals(2, 1 + 2);
+		Assertions.assertEquals(2, 1 + 1);
 	}
 }

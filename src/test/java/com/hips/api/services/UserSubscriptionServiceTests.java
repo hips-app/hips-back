@@ -31,8 +31,9 @@ public class UserSubscriptionServiceTests {
 
     @Test
     void findById() {
-        UserSubscription response = userSubscriptionService.findById(6);
-        Assertions.assertNull(response);
+        UserSubscription response = userSubscriptionService.findById(1);
+        Assertions.assertNotNull(response);
+        Assertions.assertEquals(1, response.getId());
     }
 
 }
