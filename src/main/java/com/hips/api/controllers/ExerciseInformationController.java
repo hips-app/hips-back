@@ -117,6 +117,6 @@ public class ExerciseInformationController {
     }
     SportPlan sportPlan = sportPlanRepository.getByUserGoal(userGoal);
     double percent = plannedExerciseService.getUserExerciseProgress(sportPlan.getId());
-    return new ResponseEntity<Double>(percent , HttpStatus.OK);
+    return new ResponseEntity<>(percent , HttpStatus.OK);
   }
 }
