@@ -64,6 +64,14 @@ public class UserSubscriptionController {
   @Autowired
   private UserSubscriptionRepository userSubscriptionRepository;
 
+  /**
+   * Sets the payment method for the user targeted with the account id in the
+   * userId param.
+   * @param token JWT for authentication.
+   * @param req request object holding relevant data for payment specification.
+   * @param userId account id of the user to be modified.
+   * @return http response with no payload.
+   */
   @PostMapping(value = "/{id}/payment-method")
   public ResponseEntity<Void> payment(
     @RequestHeader("Authorization") String token,
@@ -89,6 +97,14 @@ public class UserSubscriptionController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * Changes the types and characteristics of the authenticated user's
+   * subscription.
+   * @param token JWT for authentication.
+   * @param req request object holding relevant data for subscription
+   * specification.
+   * @return http response with no payload.
+   */
   @PostMapping(value = "/select-subscription")
   public ResponseEntity<Void> selectSubscription(
     @RequestHeader("Authorization") String token,
@@ -133,6 +149,12 @@ public class UserSubscriptionController {
     );
     return new ResponseEntity<>(HttpStatus.OK);
   }
+
+  /**
+   * Changes state of the subscription to cancel it.
+   * @param token JWT for authentication.
+   * @return http response with date of expiration for subscription.
+   */
   @PostMapping(value = "/cancel-subscription")
   public ResponseEntity<Date> cancelSubscription(
           @RequestHeader("Authorization")String token
@@ -160,6 +182,14 @@ public class UserSubscriptionController {
     Date date =userSubscriptions.get(userSubscriptions.size()-1).getExpirationDate();
       return new ResponseEntity<>(date,HttpStatus.OK);
   }
+
+  /**
+   * Sets the subscription's autorenew feature.
+   * @param token JWT for authentication.
+   * @param req request object holding relevant data for subscription
+   * specification.
+   * @return http response with object specifying data of the user's subscription.
+   */
   @PostMapping(value = "auto-renew-subscription")
   public ResponseEntity<RenewSubscriptionResponse> autoRenewSubscription(
           @RequestHeader("Authorization") String token,
@@ -196,6 +226,11 @@ public class UserSubscriptionController {
       return new ResponseEntity<>(response,HttpStatus.OK);
   }
 
+  /**
+   * returns all the subscription types available.
+   * @param token JWT for authentication.
+   * @return http response with list of subscription types.
+   */
   @GetMapping(value = "/subscription-types")
   public ResponseEntity<List<SubscriptionTypeResponse>> getSubscriptionTypes(
     @RequestHeader("Authorization") String token
@@ -212,6 +247,11 @@ public class UserSubscriptionController {
     return new ResponseEntity<>(subscriptionTypeResponses, HttpStatus.OK);
   }
 
+  /**
+   * Fetches list of available professionals for hire.
+   * @param token JWT for authentication.
+   * @return http response with list of objects specifying specialist data.
+   */
   @GetMapping(value = "/profesionales")
   public ResponseEntity<List<SpecialistAccountResponse>> getSpecialistAccounts(
     @RequestHeader("Authorization") String token
@@ -236,6 +276,13 @@ public class UserSubscriptionController {
     return new ResponseEntity<>(listSpecialist, HttpStatus.OK);
   }
 
+  /**
+   * Sets the professional counselor of the authenticated user.
+   * @param token JWT for authentication.
+   * @param req request object holding relevant data for subscription
+   * specification.
+   * @return http response with no payload.
+   */
   @PostMapping(value = "/escoger-profesional")
   public ResponseEntity<Void> escogerProfesional(
     @RequestHeader("Authorization") String token,

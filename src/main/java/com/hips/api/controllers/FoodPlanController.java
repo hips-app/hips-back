@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/food_plan")
@@ -29,10 +30,18 @@ public class FoodPlanController {
 
     private FoodPlanService planService = new FoodPlanService();
 
+    /**
+     * Allows an authorized user to fetch the food plan of a given user,
+     * identifying the target with its account id, passed in the param userId.
+     * An authorized user is the user being targeted itself, or any expert.
+     * @param token JWT for authentication.
+     * @param userId id of the account entity belonging to the plan's owner.
+     * @return http response, containing a summary object of the user's food plan.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<FoodPlanResponse> getPlan(@RequestHeader("Authorization") String token, @PathVariable("id") int userId){
 
-        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token));
+        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(JWT_SECRET, token));
 
         Account account = accountRepository.getById(accId);
 

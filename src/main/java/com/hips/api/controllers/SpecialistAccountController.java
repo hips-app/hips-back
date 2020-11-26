@@ -30,6 +30,11 @@ public class SpecialistAccountController {
   @Autowired
   private UserMedicalDataRepository userMedicalDataRepository;
 
+  /**
+   * Returns the user accounts under a certain specialist care.
+   * @param token JWT for authorization
+   * @return http response containing list of profile information objects.
+   */
   @GetMapping
   public ResponseEntity<List<ProfileResponse>> getSpecialistAccounts(
     @RequestHeader("Authorization") String token

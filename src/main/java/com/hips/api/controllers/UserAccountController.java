@@ -56,6 +56,12 @@ public class UserAccountController {
 
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
+  /**
+   * Endpoint for the creation of new users. Logs user after successful creation.
+   * @param req request object for minimal credentials (password and email)
+   * @return http response with object holding the user's personal information
+   * and JWT for the session. Alternatively, an error message as string.
+   */
   @PostMapping
   public ResponseEntity<LogInResponse> signup(
     @RequestBody Map<String, String> req
@@ -110,6 +116,12 @@ public class UserAccountController {
     );
   }
 
+  /**
+   * Allows the creation of a goal for the user creating it.
+   * @param token JWT for authentication.
+   * @param req Object holding data necessary for creating the goal.
+   * @return
+   */
   @PostMapping("/goals")
   public ResponseEntity<Void> setGoal(
     @RequestHeader("Authorization") String token,
@@ -156,6 +168,12 @@ public class UserAccountController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * Allows the modification of the registered data associated with the user
+   * @param token JWT for authentication.
+   * @param req Object holding the data to replace in the datasource.
+   * @return
+   */
   @PatchMapping("/personal-data")
   @Transactional
   public ResponseEntity<Void> updatePersonalInfo(
@@ -237,6 +255,13 @@ public class UserAccountController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * Fetches the profile information of the user identified with the account id
+   * given in the userId param.
+   * @param token JWT for authentication.
+   * @param userId account id for the user being targeted.
+   * @return http response with object carrying profile information.
+   */
   @GetMapping("/{id}/profile")
   public ResponseEntity<ProfileResponse> checkProfile(
     @RequestHeader("Authorization") String token,
@@ -271,6 +296,12 @@ public class UserAccountController {
     );
   }
 
+  /**
+   * Allows storing an URL for the authenticated user's profile picture.
+   * @param token JWT for authentication.
+   * @param req request object with information such as the URL.
+   * @return http response with no payload.
+   */
   @PostMapping("/profile-picture")
   public ResponseEntity<Void> setProfilePicture(
     @RequestHeader("Authorization") String token,
@@ -303,6 +334,12 @@ public class UserAccountController {
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
+  /**
+   * Changes the specialist that is currently caring for the authenticated user.
+   * @param token JWT for authentication.
+   * @param req object holding information such as the specialist's id.
+   * @return http response with no payload.
+   */
   @PostMapping("/specialist")
   public ResponseEntity<Void> setSpecialist(
     @RequestHeader("Authorization") String token,
