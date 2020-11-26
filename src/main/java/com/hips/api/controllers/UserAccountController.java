@@ -144,7 +144,19 @@ public class UserAccountController {
     }
 
     UserAccount userAccount = userAccountRepository.findByAccount(account);
-    UserGoal userGoal = new UserGoal(userAccount, description, expirationDate);
+
+    UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccount.getId());
+
+    if(userGoal == null){
+
+      userGoal = new UserGoal(userAccount, description, expirationDate);
+    }
+    else {
+
+      userGoal.setDescription(description);
+      userGoal.setExpirationDate(expirationDate);
+    }
+
     userGoal = userGoalRepository.save(userGoal);
     SportPlan sportPlan = new SportPlan(
       userGoal,

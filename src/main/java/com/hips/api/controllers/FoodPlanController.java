@@ -32,7 +32,7 @@ public class FoodPlanController {
     @GetMapping("/{id}")
     public ResponseEntity<FoodPlanResponse> getPlan(@RequestHeader("Authorization") String token, @PathVariable("id") int userId){
 
-        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token));
+        Integer accId = Integer.parseInt(AuthenticationAssistant.getJWTSubject(JWT_SECRET, token));
 
         Account account = accountRepository.getById(accId);
 
