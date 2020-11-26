@@ -22,6 +22,9 @@ public class UserAccountService {
     public Boolean hasPayment(UserAccount userAccount) {
         return userAccount.isPaymentMethod();
     }
+    public Boolean hasAutoRenewSubscription(UserAccount userAccount){
+        return userAccount.isAutoRenewSubscription();
+    }
     public void save(UserAccount userAccount) {
         userAccountRepository.save(userAccount);
     }
