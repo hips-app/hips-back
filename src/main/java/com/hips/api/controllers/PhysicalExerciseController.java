@@ -23,6 +23,11 @@ public class PhysicalExerciseController {
 
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
+  /**
+   * Gets all physical exercises, used as templates by the users to plan their
+   * routines.
+   * @return http response with a list of PhysicalExercise entities.
+   */
   @GetMapping
   public ResponseEntity<List<PhysicalExercise>> getAll() {
     List<PhysicalExercise> exercises = physicalExerciseRepository.findAll();

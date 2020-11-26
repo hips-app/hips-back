@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth")
@@ -30,6 +31,12 @@ public class AuthController {
   @Autowired
   private AccountRepository accountRepository;
 
+  /**
+   * Allows an existing user to login via email+password.
+   * @param req request object that should hold the user's credentials
+   * @return http response with object holding the user's personal information
+   * and JWT for the session. Alternatively, an error message as string.
+   */
   @PostMapping
   public ResponseEntity<LogInResponse> login(
     @RequestBody Map<String, String> req
@@ -64,6 +71,11 @@ public class AuthController {
     );
   }
 
+  /**
+   * Deletes a given token from the db's whitelist, thus rendering it invalid.
+   * @param token should be valid JWT
+   * @return http response, without payload
+   */
   @DeleteMapping
   @Transactional
   public ResponseEntity<Void> logout(

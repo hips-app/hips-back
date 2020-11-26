@@ -35,6 +35,11 @@ public class UserStatisticsController {
     @Autowired
     private StatisticsService statisticsService;
 
+    /**
+     * Fetches the data about goal advancement in terms of exercise, for the authenticated user.
+     * @param token JWT for authentication.
+     * @return http response with a list of entities detailing statistics over time.
+     */
     @GetMapping("/exercise")
     public ResponseEntity< List<StatisticsPOJO>> getExerciseStatistics(
             @RequestHeader("Authorization") String token
