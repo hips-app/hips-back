@@ -1,11 +1,5 @@
 package com.hips.api.repositories;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 import com.hips.api.models.PlannedExercise;
-import com.hips.api.models.UserGoal;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,8 +9,6 @@ public interface PlannedExerciseRepository extends JpaRepository<PlannedExercise
 
     PlannedExercise getById(int userId);
 
-    @Query(value = "select count(a) from PlannedExercise a where a.dailySportPlan IN (select b.id from DailySportPlan b where b.date >=:dateini and b.date <=:datefin)")
-        int getPlannedExercise (@Param("dateini") Calendar dateini, @Param("datefin") Calendar datefini);
-    @Query(value = "select count(a) from PlannedExercise a where a.checked=true and a.dailySportPlan IN (select b.id from DailySportPlan b where b.date >=:dateini and b.date <=:datefin)")
-        int getCheckedPlannedExercise (@Param("dateini") Calendar dateini, @Param("datefin") Calendar datefini);
+    @Query(value = "SELECT COUNT(case when pe.checked = true then pe.id end) * 100.0/COUNT(pe.id) AS percentage FROM PlannedExercise pe INNER JOIN DailySportPlan dsp ON dsp.id = pe.dailySportPlan.id WHERE dsp.sportPlan.id = :planId")
+        double getUserExerciseProgress(@Param("planId") int planId);
 }

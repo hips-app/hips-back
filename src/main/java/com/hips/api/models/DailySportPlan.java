@@ -1,11 +1,8 @@
 package com.hips.api.models;
 
-import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Date;
 
 @Entity
 @Table(name = "daily_sport_plan")
@@ -55,16 +52,13 @@ public class DailySportPlan extends Auditable implements Serializable {
         this.sportPlan = sportPlan;
     }
 
-    public WeekDay getWeekDay() {
-        return weekDay;
-    }
 
     public void setWeekDay(WeekDay weekDay) {
         this.weekDay = weekDay;
     }
 
-    public String getDescription() {
-        return description;
+    public WeekDay getWeekDay() {
+        return weekDay;
     }
 
     public void setDescription(String description) {
@@ -73,6 +67,9 @@ public class DailySportPlan extends Auditable implements Serializable {
 
     public Calendar getDate() {
         return date;
+    }
+    public String getDescription() {
+        return description;
     }
 
     public void setDate(Calendar date) {

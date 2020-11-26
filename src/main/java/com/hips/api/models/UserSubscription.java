@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table(name = "user_subscription")
 public class UserSubscription extends Auditable implements Serializable {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_subscription_id")
     private Integer id;
 

@@ -25,4 +25,8 @@ public class UserAccountService {
     public void save(UserAccount userAccount) {
         userAccountRepository.save(userAccount);
     }
+
+    public UserAccount findByIdAccount (int id){
+        return userAccountRepository.getByAccountId(id);
+    }
 }

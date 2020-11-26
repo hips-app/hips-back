@@ -3,11 +3,13 @@ package com.hips.api.controllers;
 import com.hips.api.assistants.AuthenticationAssistant;
 import com.hips.api.models.Account;
 import com.hips.api.models.ExerciseDataPoint;
+import com.hips.api.models.SportPlan;
 import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserGoal;
 import com.hips.api.repositories.AccountRepository;
 import com.hips.api.repositories.ExerciseDataPointRepository;
 import com.hips.api.repositories.PlannedExerciseRepository;
+import com.hips.api.repositories.SportPlanRepository;
 import com.hips.api.repositories.UserAccountRepository;
 import com.hips.api.repositories.UserGoalRepository;
 import com.hips.api.responses.SaveExerciseSessionRequest;
@@ -19,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,10 +46,13 @@ public class ExerciseInformationController {
     private PlannedExerciseRepository plannedExerciseRepository;
 
     @Autowired
+    private PlannedExerciseService plannedExerciseService;
+
+    @Autowired
     private UserGoalRepository userGoalRepository;
 
     @Autowired
-    private PlannedExerciseService plannedExerciseService;
+    private SportPlanRepository sportPlanRepository;
 
     @PostMapping("/{id}")
     public ResponseEntity<Void> saveCaloriesDataPoint(@RequestHeader("Authorization") String token, @PathVariable("id") int userId, @RequestBody SaveExerciseSessionRequest body){
@@ -89,7 +92,7 @@ public class ExerciseInformationController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @GetMapping("/exercise-progress")
-      public ResponseEntity<Integer> getExerciseProgress(
+      public ResponseEntity<Double> getExerciseProgress(
     @RequestHeader("Authorization") String token
   ) {
     if (token == null) {
@@ -112,11 +115,8 @@ public class ExerciseInformationController {
     if(userGoal== null){
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-    Date initialDate= userGoal.getCreatedAt();
-    Date finalDate = userGoal.getExpirationDate();
-    int plannedExercises = plannedExerciseService.getAllPlannedExercises(initialDate, finalDate);
-    int checkedPlannedEcercises = plannedExerciseService.getCheckedPlannedExercises(initialDate, finalDate);
-    int percent = (checkedPlannedEcercises * 100)/plannedExercises;
-    return new ResponseEntity<Integer>(percent, HttpStatus.OK);
+    SportPlan sportPlan = sportPlanRepository.getByUserGoal(userGoal);
+    double percent = plannedExerciseService.getUserExerciseProgress(sportPlan.getId());
+    return new ResponseEntity<>(percent , HttpStatus.OK);
   }
 }

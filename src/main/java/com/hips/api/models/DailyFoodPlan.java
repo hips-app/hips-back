@@ -52,18 +52,14 @@ public class DailyFoodPlan extends Auditable implements Serializable {
         this.foodPlan = foodPlan;
     }
 
-    public WeekDay getWeekDay() {
-        return weekDay;
-    }
 
     public void setWeekDay(WeekDay weekDay) {
         this.weekDay = weekDay;
     }
 
-    public String getDescription() {
-        return description;
+    public WeekDay getWeekDay() {
+        return weekDay;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -75,4 +71,8 @@ public class DailyFoodPlan extends Auditable implements Serializable {
     public void setDate(Calendar date) {
         this.date = date;
     }
+    public String getDescription() {
+        return description;
+    }
+
 }

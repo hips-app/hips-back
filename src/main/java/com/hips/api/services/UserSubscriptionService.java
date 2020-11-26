@@ -2,6 +2,7 @@ package com.hips.api.services;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.hips.api.models.SubscriptionType;
 import com.hips.api.models.UserAccount;
@@ -29,17 +30,28 @@ public class UserSubscriptionService {
         Calendar newDate= Calendar.getInstance();
         newDate.setTime(date);
         newDate.add(Calendar.DAY_OF_MONTH, 30);
-        date = newDate.getTime();
-        return date;
+        return newDate.getTime();
     }
-    public void createSubscription(UserAccount userAccount, SubscriptionType subscriptionType, Date expirationDate) {
-        expirationDate = createDate(expirationDate);
-        UserSubscription userSubscription = new UserSubscription(subscriptionType, userAccount, expirationDate);
+    public void createSubscription(UserAccount userAccount, SubscriptionType subscriptionType, Date initDate) {
+        initDate = createDate(initDate);
+        UserSubscription userSubscription = new UserSubscription(subscriptionType, userAccount, initDate);
         save(userSubscription);
     }
     public UserSubscription findByUserAccount(UserAccount userAccount) {
         return userSubscriptionRepository.findByUserAccount(userAccount);
-
+    }
+    public boolean checkSubscription(UserAccount userAccount, Date datenow){
+        List<UserSubscription> userSubscriptions = userSubscriptionRepository.findAllByUserAccount(userAccount);
+        return userSubscriptions.get(userSubscriptions.size()-1).getExpirationDate().compareTo(datenow) < 0;
+    }
+    public void renewSubscription(UserAccount userAccount , Date datenow) {
+        List<UserSubscription> userSubscriptions = userSubscriptionRepository.findAllByUserAccount(userAccount);
+        boolean checkSubscription = checkSubscription(userAccount, datenow);
+        if(!checkSubscription){
+            SubscriptionType subscriptionType = userSubscriptions.get(userSubscriptions.size()-1).getSubscriptionType();
+            Date initDate = userSubscriptions.get(userSubscriptions.size()-1).getExpirationDate();
+            createSubscription(userAccount, subscriptionType, initDate);
+        }
     }
 
     public UserSubscription findById(Integer id){
