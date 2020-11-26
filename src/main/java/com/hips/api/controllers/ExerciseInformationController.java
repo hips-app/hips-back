@@ -119,4 +119,34 @@ public class ExerciseInformationController {
     double percent = plannedExerciseService.getUserExerciseProgress(sportPlan.getId());
     return new ResponseEntity<>(percent , HttpStatus.OK);
   }
+
+    @GetMapping("/exercise-progress/{id}")
+    public ResponseEntity<Double> checkExerciseProgress(
+            @RequestHeader("Authorization") String token,
+            @PathVariable("id") int userId
+    ) {
+        if (token == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+        if (account == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        if (account.getType().getId() == 1 && account.getId() != userId) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        UserAccount userAccount = userAccountRepository.findByAccount(account);
+
+        if(userAccount == null){
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccount.getId());
+        if(userGoal== null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        SportPlan sportPlan = sportPlanRepository.getByUserGoal(userGoal);
+        double percent = plannedExerciseService.getUserExerciseProgress(sportPlan.getId());
+        return new ResponseEntity<>(percent , HttpStatus.OK);
+    }
 }
