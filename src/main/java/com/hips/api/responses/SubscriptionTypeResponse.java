@@ -9,15 +9,9 @@ public class SubscriptionTypeResponse {
     private String description;
     public SubscriptionTypeResponse(SubscriptionType subscriptionType) {
         this.id= subscriptionType.getId();
-        this.name= subscriptionType.getName();
-        this.price= subscriptionType.getPrice();
         this.description= subscriptionType.getDescription();
-    }
-    public Integer getId() {
-        return id;
-    }
-    public void setId(Integer id) {
-        this.id = id;
+        this.price= subscriptionType.getPrice();
+        this.name= subscriptionType.getName();
     }
     public String getName() {
         return name;
@@ -30,6 +24,12 @@ public class SubscriptionTypeResponse {
     }
     public void setPrice(int price) {
         this.price = price;
+    }
+    public Integer getId() {
+        return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
     }
     public String getDescription() {
         return description;

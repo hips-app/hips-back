@@ -1,45 +1,80 @@
 package com.hips.api.assistants;
 
-import com.hips.api.models.*;
-import com.hips.api.repositories.*;
-import com.hips.api.responses.LogInResponse;
-import com.hips.api.responses.ProfileResponse;
-import com.hips.api.responses.SelectExercisesResponse;
-import com.hips.api.responses.UserGoalResponse;
-import com.hips.api.services.TokenAuthenticationService;
+import com.hips.api.models.Account;
+import com.hips.api.repositories.AccountRepository;
 import io.jsonwebtoken.*;
 import java.security.Key;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.crypto.spec.SecretKeySpec;
-import javax.transaction.Transactional;
 import javax.xml.bind.DatatypeConverter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.web.bind.annotation.*;
 
 public class AuthenticationAssistant {
 
-  public static String getJWT_Subject(String secret, String token) throws SignatureException {
-    Claims claims = Jwts
-      .parser()
-      .setSigningKey(DatatypeConverter.parseBase64Binary(secret))
-      .parseClaimsJws(token)
-      .getBody();
+  private AuthenticationAssistant() {}
 
-    return claims.getSubject();
+  public static String getJWTSubject(String secret, String token) {
+    try {
+      Claims claims = Jwts
+        .parser()
+        .setSigningKey(DatatypeConverter.parseBase64Binary(secret))
+        .parseClaimsJws(token)
+        .getBody();
+
+      return claims.getSubject();
+    } catch (Exception e) {
+      return null;
+    }
   }
 
-  public static String createJWT(String secret, Integer id, long ttlMillis) {
+  public static Account validateToken(
+    AccountRepository accountRepository,
+    String jwtSecret,
+    String token
+  ) {
+    Integer accountId;
+    if (token == null) {
+      return null;
+    }
+    try {
+      accountId =
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
+      return accountRepository.getById(accountId);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static Account validateTokenAndUser(
+    AccountRepository accountRepository,
+    String jwtSecret,
+    String token,
+    int userId
+  ) {
+    Integer accountId;
+    if (token == null) {
+      return null;
+    }
+    try {
+      accountId =
+        Integer.parseInt(
+          AuthenticationAssistant.getJWTSubject(jwtSecret, token)
+        );
+
+      if (!accountId.equals(userId)) {
+        return null;
+      }
+      return accountRepository.getById(accountId);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static String createJWT(String secret, Integer id, long hours) {
     SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-    long nowMillis = System.currentTimeMillis();
-    Date now = new Date(nowMillis);
+    Date now = new Date();
 
     byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secret);
     Key signingKey = new SecretKeySpec(
@@ -53,9 +88,8 @@ public class AuthenticationAssistant {
       .setSubject(id.toString())
       .signWith(signatureAlgorithm, signingKey);
 
-    if (ttlMillis > 0) {
-      long expMillis = nowMillis + ttlMillis;
-      Date exp = new Date(expMillis);
+    if (hours > 0) {
+      Date exp = Date.from(new Date().toInstant().plusSeconds(hours * 60 * 60));
       builder.setExpiration(exp);
     }
 

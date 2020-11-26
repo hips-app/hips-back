@@ -5,17 +5,10 @@ import com.hips.api.models.*;
 import com.hips.api.repositories.*;
 import com.hips.api.responses.LogInResponse;
 import com.hips.api.responses.ProfileResponse;
-import com.hips.api.responses.SelectExercisesResponse;
-import com.hips.api.responses.UserGoalResponse;
 import com.hips.api.services.TokenAuthenticationService;
-import io.jsonwebtoken.*;
-import java.security.Key;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
-import javax.xml.bind.DatatypeConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,13 +21,14 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "*")
 @RequestMapping("/users")
 public class UserAccountController {
+
   static final String PARAM_FIRST_NAME = "firstName";
   static final String PARAM_LAST_NAME = "lastName";
   static final String PARAM_EMAIL = "email";
   static final String PARAM_PASSWORD = "password";
 
   @Value("${JWT_SECRET}")
-  private String JWT_SECRET;
+  private String jwtSecret;
 
   @Autowired
   private UserAccountRepository userAccountRepository;
@@ -56,16 +50,20 @@ public class UserAccountController {
 
   @Autowired
   private SportPlanRepository sportPlanRepository;
-  
+
+  @Autowired
+  private SpecialistAccountRepository specialistAccountRepository;
 
   TokenAuthenticationService tokenAuthenticationService = new TokenAuthenticationService();
 
   @PostMapping
   public ResponseEntity<LogInResponse> signup(
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
-    String uid = null;
-    String firstName, lastName, email, pass;
+    String firstName;
+    String lastName;
+    String email;
+    String pass;
     firstName = req.get(PARAM_FIRST_NAME);
     lastName = req.get(PARAM_LAST_NAME);
     email = req.get(PARAM_EMAIL);
@@ -81,7 +79,6 @@ public class UserAccountController {
     String salt = BCrypt.gensalt();
     pass = BCrypt.hashpw(pass, salt);
     Account account = new Account(
-      uid,
       accountType.get(0),
       email,
       firstName,
@@ -101,9 +98,9 @@ public class UserAccountController {
     }
 
     String token = AuthenticationAssistant.createJWT(
-      JWT_SECRET,
+      jwtSecret,
       account.getId(),
-      (long)1000 * 60 * 2
+      10
     );
 
     tokenRepository.save(new AccountTokenWhitelist(account, token));
@@ -116,22 +113,16 @@ public class UserAccountController {
   @PostMapping("/goals")
   public ResponseEntity<Void> setGoal(
     @RequestHeader("Authorization") String token,
-    @RequestBody HashMap<String, String> req
-  )
-    throws Exception {
-    Integer accountId;
-    if (token == null) {
+    @RequestBody Map<String, String> req
+  ) {
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
+    if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
-        );
-    } catch (ExpiredJwtException e) {
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -141,18 +132,27 @@ public class UserAccountController {
     Date expirationDate;
 
     description = req.get("description");
-    expirationDate =
-      new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
+    try {
+      expirationDate =
+        new SimpleDateFormat("yyyy-MM-dd").parse(req.get("expirationDate"));
+    } catch (Exception e) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
 
-    if (description == null || expirationDate == null || token == null) {
+    if (description == null || expirationDate == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     UserAccount userAccount = userAccountRepository.findByAccount(account);
     UserGoal userGoal = new UserGoal(userAccount, description, expirationDate);
     userGoal = userGoalRepository.save(userGoal);
-    SportPlan sportPlan = new SportPlan(userGoal, new Date(), expirationDate, description);
-    sportPlan = sportPlanRepository.save(sportPlan);
+    SportPlan sportPlan = new SportPlan(
+      userGoal,
+      new Date(),
+      expirationDate,
+      description
+    );
+    sportPlanRepository.save(sportPlan);
     return new ResponseEntity<>(HttpStatus.OK);
   }
 
@@ -160,26 +160,20 @@ public class UserAccountController {
   @Transactional
   public ResponseEntity<Void> updatePersonalInfo(
     @RequestHeader("Authorization") String token,
-    @RequestBody HashMap<String, String> req
+    @RequestBody Map<String, String> req
   ) {
-    Integer accountId;
-    if (token == null) {
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
+    if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    try {
-      accountId =
-        Integer.parseInt(
-          AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
-        );
-    } catch (
-      SignatureException | NumberFormatException | ExpiredJwtException e
-    ) {
-      e.printStackTrace();
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
 
-    Account account = accountRepository.getById(accountId);
-    UserAccount userAccount = userAccountRepository.getByAccountId(accountId);
+    UserAccount userAccount = userAccountRepository.getByAccountId(
+      account.getId()
+    );
     int userAccountId = userAccount.getId();
     UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(
       userAccountId
@@ -205,74 +199,66 @@ public class UserAccountController {
     try {
       date = dateFormat.parse(birthDate);
     } catch (Exception e) {
-      e.printStackTrace();
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     if (
-      firstName != null &&
-      lastName != null &&
-      heightInCentimeters != 0 &&
-      weightInKilograms != 0 &&
-      date != null
+      firstName == null ||
+      lastName == null ||
+      heightInCentimeters == 0 ||
+      weightInKilograms == 0 ||
+      date == null
     ) {
-      if (!account.getFirstName().equals(firstName)) {
-        account.setFirstName(firstName);
-      }
-      if (!account.getLastName().equals(lastName)) {
-        account.setLastName(lastName);
-      }
-      accountRepository.save(account);
-      if (userMedicalData != null) {
-        if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
-          userMedicalData.setHeightInCentimeters(heightInCentimeters);
-        }
-        if (weightInKilograms != userMedicalData.getWeightInKilograms()) {
-          userMedicalData.setWeightInKilograms(weightInKilograms);
-        }
-        userMedicalDataRepository.save(userMedicalData);
-      } else {
-        UserMedicalData medicaldata = new UserMedicalData(
-          userAccount,
-          date,
-          heightInCentimeters,
-          weightInKilograms
-        );
-        userMedicalDataRepository.save(medicaldata);
-      }
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
+    if (!account.getFirstName().equals(firstName)) {
+      account.setFirstName(firstName);
+    }
+    if (!account.getLastName().equals(lastName)) {
+      account.setLastName(lastName);
+    }
+    accountRepository.save(account);
+    if (userMedicalData != null) {
+      if (heightInCentimeters != userMedicalData.getHeightInCentimeters()) {
+        userMedicalData.setHeightInCentimeters(heightInCentimeters);
+      }
+      if (weightInKilograms != userMedicalData.getWeightInKilograms()) {
+        userMedicalData.setWeightInKilograms(weightInKilograms);
+      }
+      userMedicalDataRepository.save(userMedicalData);
+    } else {
+      UserMedicalData medicaldata = new UserMedicalData(
+        userAccount,
+        date,
+        heightInCentimeters,
+        weightInKilograms
+      );
+      userMedicalDataRepository.save(medicaldata);
+    }
     return new ResponseEntity<>(HttpStatus.OK);
   }
-  
+
   @GetMapping("/{id}/profile")
   public ResponseEntity<ProfileResponse> checkProfile(
     @RequestHeader("Authorization") String token,
     @PathVariable("id") int userId
   ) {
-    if (token == null) {
+    Account account = AuthenticationAssistant.validateTokenAndUser(
+      accountRepository,
+      jwtSecret,
+      token,
+      userId
+    );
+    if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Integer accountId;
-    try {
-      accountId = Integer.parseInt(
-        AuthenticationAssistant.getJWT_Subject(JWT_SECRET, token)
-      );
-      if (!accountId.equals(userId)) {
-        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-      }
-    } catch (
-      SignatureException | NumberFormatException | ExpiredJwtException e
-    ) {
-      e.printStackTrace();
-      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-    }
-
-    Account account = accountRepository.getById(accountId);
 
     if (account.getType().getId() != 1) {
       return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    UserAccount userAccount = userAccountRepository.getByAccountId(accountId);
+    UserAccount userAccount = userAccountRepository.getByAccountId(
+      account.getId()
+    );
     int userAccountId = userAccount.getId();
 
     UserMedicalData userMedicalData = userMedicalDataRepository.getByUserAccountId(
@@ -280,8 +266,72 @@ public class UserAccountController {
     );
     UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccountId);
     return new ResponseEntity<>(
-      new ProfileResponse(account, userGoal, userMedicalData),
+      new ProfileResponse(account, userAccount, userGoal, userMedicalData),
       HttpStatus.OK
     );
+  }
+
+  @PostMapping("/profile-picture")
+  public ResponseEntity<Void> setProfilePicture(
+    @RequestHeader("Authorization") String token,
+    @RequestBody Map<String, String> req
+  ) {
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    if (account.getType().getId() != 1) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    String urlPicture;
+
+    urlPicture = req.get("urlPicture");
+
+    if (urlPicture == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    account.setProfilePicture(urlPicture);
+    accountRepository.save(account);
+
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @PostMapping("/specialist")
+  public ResponseEntity<Void> setSpecialist(
+    @RequestHeader("Authorization") String token,
+    @RequestBody Map<String, String> req
+  ) {
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    if (account.getType().getId() != 1) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+    int specialistId = Integer.parseInt(req.get("specialistId"));
+
+    SpecialistAccount specialistAccount = specialistAccountRepository.getById(
+      specialistId
+    );
+    UserAccount userAccount = userAccountRepository.getByAccountId(
+      account.getId()
+    );
+
+    userAccount.setSpecialistAccount(specialistAccount);
+    userAccountRepository.save(userAccount);
+
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }

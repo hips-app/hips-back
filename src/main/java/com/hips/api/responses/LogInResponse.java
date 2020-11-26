@@ -1,11 +1,8 @@
 package com.hips.api.responses;
 
 import com.hips.api.models.Account;
-import com.hips.api.models.UserAccount;
 import com.hips.api.models.UserSubscription;
-import com.hips.api.services.UserSubscriptionService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 
@@ -18,30 +15,26 @@ public class LogInResponse implements Serializable {
   UserSubscription subscription;
   String errorMessage;
   Integer accountType;
-  @Autowired
-  UserSubscriptionService userSubscriptionService;
-  public LogInResponse() {}
+  public LogInResponse() {
+      //this method is empty
+  }
 
-  public LogInResponse(String errorMessage) {
-    this.errorMessage = errorMessage;
+  public LogInResponse(String errorMessagee) {
+    this.errorMessage = errorMessagee;
   }
 
   public LogInResponse(Account account, String token) {
     this.id = account.getId();
-    this.firstName = account.getFirstName();
+    this.subscription= null;
     this.lastName = account.getLastName();
     this.email = account.getEmail();
-    this.token = token;
-    this.subscription= null;
+    this.firstName = account.getFirstName();
     this.accountType = account.getType().getId();
+    this.token = token;
   }
 
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
+  public String getLastName() {
+    return lastName;
   }
 
   public Integer getAccountType() {
@@ -52,22 +45,26 @@ public class LogInResponse implements Serializable {
     this.accountType = accountType;
   }
 
-  public String getFirstName() {
-    return firstName;
+  public void setId(Integer id) {
+    this.id = id;
   }
 
-  public void setFirstName(String firstName) {
-    this.firstName = firstName;
-  }
-
-  public String getLastName() {
-    return lastName;
-  }
 
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
 
+  public String getFirstName() {
+    return firstName;
+  }
+  public Integer getId() {
+    return id;
+  }
+
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
   public String getEmail() {
     return email;
   }

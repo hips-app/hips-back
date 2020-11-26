@@ -6,10 +6,11 @@ import java.util.List;
 
 public class SaveExerciseSessionRequest implements Serializable {
 
-    List<Integer> ids;
+    private List<Integer> ids;
     Date date;
 
     public SaveExerciseSessionRequest() {
+        //this method is empty
     }
 
     public List<Integer> getIds() {

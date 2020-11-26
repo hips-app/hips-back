@@ -18,6 +18,9 @@ public class PlannedExercise extends Auditable implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     PhysicalExercise physicalExercise;
 
+    @Column(name="checked")
+    private boolean checked=false;
+
     @Column()
     int repetitionsAmount;
 
@@ -73,6 +76,12 @@ public class PlannedExercise extends Auditable implements Serializable {
 
     public void setSeriesAmount(int seriesAmount) {
         this.seriesAmount = seriesAmount;
+    }
+    public boolean isChecked() {
+        return checked;
+    }
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 
     @Override

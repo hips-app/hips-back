@@ -2,6 +2,7 @@ package com.hips.api.models;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Calendar;
 
 @Entity
 @Table(name = "daily_sport_plan")
@@ -18,16 +19,21 @@ public class DailySportPlan extends Auditable implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     WeekDay weekDay;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false, updatable = false)
+    Calendar date;
+
     @Column(length = 500)
     String description;
 
     public DailySportPlan() {
     }
 
-    public DailySportPlan(SportPlan sportPlan, WeekDay weekDay, String description) {
+    public DailySportPlan(SportPlan sportPlan, WeekDay weekDay, String description, Calendar date) {
         this.sportPlan = sportPlan;
         this.weekDay = weekDay;
         this.description = description;
+        this.date = date;
     }
 
     public int getId() {
@@ -46,20 +52,28 @@ public class DailySportPlan extends Auditable implements Serializable {
         this.sportPlan = sportPlan;
     }
 
-    public WeekDay getWeekDay() {
-        return weekDay;
-    }
 
     public void setWeekDay(WeekDay weekDay) {
         this.weekDay = weekDay;
     }
 
-    public String getDescription() {
-        return description;
+    public WeekDay getWeekDay() {
+        return weekDay;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Calendar getDate() {
+        return date;
+    }
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDate(Calendar date) {
+        this.date = date;
     }
 
     @Override

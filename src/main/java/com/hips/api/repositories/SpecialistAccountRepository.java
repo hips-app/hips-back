@@ -6,5 +6,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
 public interface SpecialistAccountRepository extends CrudRepository<SpecialistAccount, Integer> {
-
+    SpecialistAccount getById(Integer id);
 }

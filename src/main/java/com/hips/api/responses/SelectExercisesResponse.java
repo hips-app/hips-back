@@ -4,7 +4,6 @@ import com.hips.api.models.PhysicalExercise;
 import com.hips.api.models.PhysicalExerciseType;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class SelectExercisesResponse  implements Serializable {
 

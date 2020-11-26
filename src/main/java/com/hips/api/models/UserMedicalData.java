@@ -31,16 +31,10 @@ public class UserMedicalData extends Auditable implements Serializable{
     }
 
     public UserMedicalData(UserAccount owner,Date birthDay, int heightInCentimeters, int weightInKilograms) {
-        this.userAccount=owner;
         this.birthDay=birthDay;
-        this.heightInCentimeters=heightInCentimeters;
+        this.userAccount=owner;
         this.weightInKilograms=weightInKilograms;
-    }
-    public UserAccount getOwner() {
-        return userAccount;
-    }
-    public void setOwner(UserAccount owner) {
-        this.userAccount = owner;
+        this.heightInCentimeters=heightInCentimeters;
     }
     public Date getBirthDay() {
         return birthDay;
@@ -48,17 +42,23 @@ public class UserMedicalData extends Auditable implements Serializable{
     public void setBirthDay(Date birthDay) {
         this.birthDay = birthDay;
     }
-    public int getHeightInCentimeters() {
-        return heightInCentimeters;
+    public UserAccount getOwner() {
+        return userAccount;
     }
-    public void setHeightInCentimeters(int heightInCentimeters) {
-        this.heightInCentimeters = heightInCentimeters;
+    public void setOwner(UserAccount owner) {
+        this.userAccount = owner;
     }
     public int getWeightInKilograms() {
         return weightInKilograms;
     }
     public void setWeightInKilograms(int weightInKilograms) {
         this.weightInKilograms = weightInKilograms;
+    }
+    public int getHeightInCentimeters() {
+        return heightInCentimeters;
+    }
+    public void setHeightInCentimeters(int heightInCentimeters) {
+        this.heightInCentimeters = heightInCentimeters;
     }
     @Override
     public String toString() {

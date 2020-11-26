@@ -3,124 +3,156 @@ package com.hips.api.models;
 import java.io.Serializable;
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "account")
 public class Account extends Auditable implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id", updatable = false, nullable = false)
-    int id;
-    @Column(length = 100, unique = true)
-    String uid;
-    @ManyToOne(fetch = FetchType.LAZY)
-    AccountType type;
-    @Column(length = 100, unique = true)
-    String email;
-    @Column(length = 100)
-    String firstName;
-    @Column(length = 100)
-    String lastName;
-    @Column(columnDefinition = "TEXT")
-    String profilePicture;
-    @Column(columnDefinition = "TEXT")
-    String password;
-    @Column(columnDefinition = "TEXT")
-    String salt;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "id", updatable = false, nullable = false)
+  int id;
 
-    public Account() {
-    }
+  @Column(length = 100, unique = true)
+  String uid;
 
-    public Account(String uid, AccountType type, String email, String firstName,
-            String lastName, String password, String salt, String profilePicture) {
-        this.uid = uid;
-        this.type = type;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.profilePicture = profilePicture;
-        this.password = password;
-        this.salt = salt;
-    }
+  @ManyToOne(fetch = FetchType.LAZY)
+  AccountType type;
 
-    public String getPassword() {
-        return password;
-    }
+  @Column(length = 100, unique = true)
+  String email;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  @Column(length = 100)
+  String firstName;
 
-    public String getSalt() {
-        return salt;
-    }
+  @Column(length = 100)
+  String lastName;
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
+  @Column(columnDefinition = "TEXT")
+  String profilePicture;
 
-    public int getId() {
-        return id;
-    }
+  @Column(columnDefinition = "TEXT")
+  String password;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  @Column(columnDefinition = "TEXT")
+  String salt;
 
-    public String getUid() {
-        return uid;
-    }
+  public Account() {}
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
+  public Account(
+    AccountType type,
+    String email,
+    String firstName,
+    String lastName,
+    String password,
+    String salt,
+    String profilePicture
+  ) {
+    this.type = type;
+    this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.profilePicture = profilePicture;
+    this.password = password;
+    this.salt = salt;
+  }
 
-    public AccountType getType() {
-        return type;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setType(AccountType type) {
-        this.type = type;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getEmail() {
-        return email;
-    }
+  public String getSalt() {
+    return salt;
+  }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setSalt(String salt) {
+    this.salt = salt;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public int getId() {
+    return id;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public void setId(int id) {
+    this.id = id;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public String getUid() {
+    return uid;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setUid(String uid) {
+    this.uid = uid;
+  }
 
-    public String getProfilePicture() {
-        return profilePicture;
-    }
+  public AccountType getType() {
+    return type;
+  }
 
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
-    }
+  public void setType(AccountType type) {
+    this.type = type;
+  }
 
-    @Override
-    public String toString() {
-        return "Account{" + "id=" + id + ", uid=" + uid + ", type=" + type + 
-                ", email=" + email + ", firstName=" + firstName + ", lastName=" 
-                + lastName + ", profilePicture=" + profilePicture + ", isActive="
-                + this.isActive() + ", createdAt=" + this.getCreatedAt() + ", updatedAt=" + this.getUpdatedAt() + '}';
-    }
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public String getProfilePicture() {
+    return profilePicture;
+  }
+
+  public void setProfilePicture(String profilePicture) {
+    this.profilePicture = profilePicture;
+  }
+
+  @Override
+  public String toString() {
+    return (
+      "Account{" +
+      "id=" +
+      id +
+      ", uid=" +
+      uid +
+      ", type=" +
+      type +
+      ", email=" +
+      email +
+      ", firstName=" +
+      firstName +
+      ", lastName=" +
+      lastName +
+      ", profilePicture=" +
+      profilePicture +
+      ", isActive=" +
+      this.isActive() +
+      ", createdAt=" +
+      this.getCreatedAt() +
+      ", updatedAt=" +
+      this.getUpdatedAt() +
+      '}'
+    );
+  }
 }

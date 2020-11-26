@@ -5,25 +5,22 @@ import java.util.Date;
 
 public class SaveCaloriesRequest implements Serializable {
 
-    Double Calories;
-    Date date;
+  Double calories;
+  Date date;
 
-    public SaveCaloriesRequest() {
-    }
+  public double getCalories() {
+    return calories;
+  }
 
-    public double getCalories() {
-        return Calories;
-    }
+  public void setCalories(Double calories) {
+    this.calories = calories;
+  }
 
-    public void setCalories(Double calories) {
-        Calories = calories;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
+  public void setDate(Date date) {
+    this.date = date;
+  }
 }
