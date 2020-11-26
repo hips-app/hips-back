@@ -14,7 +14,7 @@ class SubscriptionTypeServiceTest {
     @Autowired
     private SubscriptionTypeService subscriptionTypeService;
 
-    @Test
+    /*@Test
     void findAll(){
         List<SubscriptionType> response = subscriptionTypeService.findAll();
         Assertions.assertEquals(1,response.size());
@@ -27,5 +27,5 @@ class SubscriptionTypeServiceTest {
     @Test
     void findSpecialistAccountByWrongId(){
         Assertions.assertNull(subscriptionTypeService.findById(2));
-    }
+    }*/
 }

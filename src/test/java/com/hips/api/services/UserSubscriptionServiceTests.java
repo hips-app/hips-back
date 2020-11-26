@@ -18,7 +18,7 @@ class UserSubscriptionServiceTests {
     @Autowired
     private UserAccountService userAccountService;
 
-    @Test
+    /*@Test
     void createDate_DatesDiffInDaysMustBe30() {
         Date now = new Date();
         Date response = userSubscriptionService.createDate(now);
@@ -55,6 +55,6 @@ class UserSubscriptionServiceTests {
         UserSubscription response = userSubscriptionService.findById(1);
         UserAccount userAccount = response.getUserAccount();
         Assertions.assertEquals(true,userSubscriptionService.checkSubscription(userAccount, new Date()));
-    }
+    }*/
 
 }

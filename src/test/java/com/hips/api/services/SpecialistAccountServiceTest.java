@@ -14,7 +14,7 @@ public class SpecialistAccountServiceTest {
     @Autowired
     private SpecialistAccountService specialistAccountService;
 
-    @Test
+    /*@Test
     void findAll(){
         List<SpecialistAccount> specialists = specialistAccountService.findAll();
         Assertions.assertEquals(2, specialists.size());
@@ -28,5 +28,5 @@ public class SpecialistAccountServiceTest {
     @Test
     void findSpecialistAccountByWrongId(){
         Assertions.assertNull(specialistAccountService.findById(4));
-    }
+    }*/
 }

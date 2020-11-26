@@ -81,7 +81,12 @@ public class UserSubscriptionController {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = AuthenticationAssistant.validateTokenAndUser(accountRepository, jwtSecret, token, userId);
+    Account account = AuthenticationAssistant.validateTokenAndUser(
+      accountRepository,
+      jwtSecret,
+      token,
+      userId
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -110,8 +115,11 @@ public class UserSubscriptionController {
     @RequestHeader("Authorization") String token,
     @RequestBody Map<String, String> req
   ) {
-
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -129,11 +137,14 @@ public class UserSubscriptionController {
     if (!Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
       return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
-    if (userAccount.getSpecialistAccount()!= null && userAccount.getSpecialistAccount().getId() != specialistAccount.getId()) {
-        return new ResponseEntity<>(HttpStatus.CONFLICT);
+    if (
+      userAccount.getSpecialistAccount() != null &&
+      userAccount.getSpecialistAccount().getId() != specialistAccount.getId()
+    ) {
+      return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
-      userAccount.setSpecialistAccount(specialistAccount);
-      userAccountService.save(userAccount);
+    userAccount.setSpecialistAccount(specialistAccount);
+    userAccountService.save(userAccount);
     String initDate = req.get("initialDate");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     Date date = null;
@@ -157,12 +168,16 @@ public class UserSubscriptionController {
    */
   @PostMapping(value = "/cancel-subscription")
   public ResponseEntity<Date> cancelSubscription(
-          @RequestHeader("Authorization")String token
-  ){
+    @RequestHeader("Authorization") String token
+  ) {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -174,13 +189,51 @@ public class UserSubscriptionController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
     if (userAccount.isAutoRenewSubscription()) {
-        userAccount.setAutoRenewSubscription(false);
+      userAccount.setAutoRenewSubscription(false);
     }
     userAccount.setPaymentMethod(false);
     userAccountService.save(userAccount);
-    List<UserSubscription> userSubscriptions = userSubscriptionRepository.findAllByUserAccount(userAccount);
-    Date date =userSubscriptions.get(userSubscriptions.size()-1).getExpirationDate();
-      return new ResponseEntity<>(date,HttpStatus.OK);
+    List<UserSubscription> userSubscriptions = userSubscriptionRepository.findAllByUserAccount(
+      userAccount
+    );
+    Date date = userSubscriptions
+      .get(userSubscriptions.size() - 1)
+      .getExpirationDate();
+    return new ResponseEntity<>(date, HttpStatus.OK);
+  }
+
+  /**
+   * Changes state of the subscription to cancel it.
+   * @param token JWT for authentication.
+   * @return http response with date of expiration for subscription.
+   */
+  @GetMapping(value = "/has-subscription")
+  public ResponseEntity<Boolean> hasSubscription(
+    @RequestHeader("Authorization") String token
+  ) {
+    if (token == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
+    if (account == null) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    if (account.getType().getId() != 1) {
+      return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+    UserAccount userAccount = userAccountService.findByAccount(account);
+    if (!Boolean.TRUE.equals(userAccountService.hasPayment(userAccount))) {
+      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    return new ResponseEntity<>(
+      userAccount.isAutoRenewSubscription(),
+      HttpStatus.OK
+    );
   }
 
   /**
@@ -192,13 +245,17 @@ public class UserSubscriptionController {
    */
   @PostMapping(value = "auto-renew-subscription")
   public ResponseEntity<RenewSubscriptionResponse> autoRenewSubscription(
-          @RequestHeader("Authorization") String token,
-          @RequestBody Map<String, String> req
-    ){
+    @RequestHeader("Authorization") String token,
+    @RequestBody Map<String, String> req
+  ) {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -210,20 +267,16 @@ public class UserSubscriptionController {
       return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
     if (!userAccount.isAutoRenewSubscription()) {
-        userAccount.setAutoRenewSubscription(true);
+      userAccount.setAutoRenewSubscription(true);
     }
-    String datenow = req.get("datenow");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    Date date = null;
-    try {
-      date = dateFormat.parse(datenow);
-    } catch (Exception e) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-    userSubscriptionService.renewSubscription(userAccount, date);
-    List<UserSubscription> userSubscription = userSubscriptionRepository.findAllByUserAccount(userAccount);
-    RenewSubscriptionResponse response = new RenewSubscriptionResponse(userSubscription.get(userSubscription.size()-1));
-      return new ResponseEntity<>(response,HttpStatus.OK);
+    userSubscriptionService.renewSubscription(userAccount, new Date());
+    List<UserSubscription> userSubscription = userSubscriptionRepository.findAllByUserAccount(
+      userAccount
+    );
+    RenewSubscriptionResponse response = new RenewSubscriptionResponse(
+      userSubscription.get(userSubscription.size() - 1)
+    );
+    return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   /**
@@ -291,7 +344,11 @@ public class UserSubscriptionController {
     if (token == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Account account = AuthenticationAssistant.validateToken(accountRepository, jwtSecret, token);
+    Account account = AuthenticationAssistant.validateToken(
+      accountRepository,
+      jwtSecret,
+      token
+    );
     if (account == null) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }

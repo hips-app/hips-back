@@ -17,8 +17,8 @@ public class ProfileResponse implements Serializable {
   String goalDescription;
   Date goalExpirationDate;
   Date birthDay;
-  int heightInCentimeters;
-  int weightInKilograms;
+  Integer heightInCentimeters;
+  Integer weightInKilograms;
 
   public ProfileResponse(
     Account account,
@@ -29,13 +29,14 @@ public class ProfileResponse implements Serializable {
     this.firstName = account.getFirstName();
     this.id = account.getId();
     this.email = account.getEmail();
-    this.goalDescription = userGoal.getDescription();
+    this.goalDescription = userGoal != null ? userGoal.getDescription() : null;
     this.profilePicture = account.getProfilePicture();
-    this.birthDay = userMedicalData.getBirthDay();
+    this.birthDay = userMedicalData != null ? userMedicalData.getBirthDay() : null;
     this.lastName = account.getLastName();
-    this.goalExpirationDate = userGoal.getExpirationDate();
-    this.heightInCentimeters = userMedicalData.getHeightInCentimeters();
-    this.weightInKilograms = userMedicalData.getWeightInKilograms();
+    this.goalExpirationDate =
+      userGoal != null ? userGoal.getExpirationDate() : null;
+    this.heightInCentimeters = userMedicalData != null ? userMedicalData.getHeightInCentimeters() : null;
+    this.weightInKilograms = userMedicalData != null ? userMedicalData.getWeightInKilograms() : null;
   }
 
   public void setId(Integer id) {
@@ -102,19 +103,19 @@ public class ProfileResponse implements Serializable {
     this.birthDay = birthDay;
   }
 
-  public int getHeightInCentimeters() {
+  public Integer getHeightInCentimeters() {
     return heightInCentimeters;
   }
 
-  public void setHeightInCentimeters(int heightInCentimeters) {
+  public void setHeightInCentimeters(Integer heightInCentimeters) {
     this.heightInCentimeters = heightInCentimeters;
   }
 
-  public int getWeightInKilograms() {
+  public Integer getWeightInKilograms() {
     return weightInKilograms;
   }
 
-  public void setWeightInKilograms(int weightInKilograms) {
+  public void setWeightInKilograms(Integer weightInKilograms) {
     this.weightInKilograms = weightInKilograms;
   }
 }

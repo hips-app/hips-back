@@ -14,7 +14,7 @@ class UserAccountServiceTest {
     @Autowired
     private UserAccountService userAccountService;
 
-    @Test
+    /*@Test
     void findUserAccountById (){
         UserAccount userAccount = userAccountService.findByIdAccount(3);
         Assertions.assertNotNull(userAccount);
@@ -33,5 +33,5 @@ class UserAccountServiceTest {
     void userAccountHasAutoRenewSubscription(){
         UserAccount userAccount = userAccountService.findByIdAccount(3);
         Assertions.assertEquals(false, userAccountService.hasAutoRenewSubscription(userAccount));
-    }
+    }*/
 }

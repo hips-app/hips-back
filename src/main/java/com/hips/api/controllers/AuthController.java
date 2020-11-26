@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/auth")
@@ -153,6 +152,12 @@ public class AuthController {
     }
 
     Account account = accountRepository.getById(accountId);
+    if (account == null) {
+      return new ResponseEntity<>(
+        new LogInResponse(ACCOUNTERROR),
+        HttpStatus.BAD_REQUEST
+      );
+    }
     return new ResponseEntity<>(
       new LogInResponse(account, token),
       HttpStatus.OK

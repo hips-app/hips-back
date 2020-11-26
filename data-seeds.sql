@@ -76,9 +76,9 @@ VALUES
     ('sunday', true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ;
 INSERT INTO user_medical_data
-    (id,  is_active, created_at, updated_at,height_in_centimeters,weight_in_kilograms,birth_day,user_account_user_account_id)
+    (is_active, created_at, updated_at,height_in_centimeters,weight_in_kilograms,birth_day,user_account_user_account_id)
 VALUES
-    (2,true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 150,54, CURRENT_TIMESTAMP, 1)
+    (true, CURRENT_TIMESTAMP,CURRENT_TIMESTAMP, 150,54, CURRENT_TIMESTAMP, 1)
 ;
 
 INSERT INTO user_subscription

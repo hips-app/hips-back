@@ -108,12 +108,11 @@ public class ExerciseInformationController {
     UserAccount userAccount = userAccountRepository.findByAccount(account);
 
     if(userAccount == null){
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     UserGoal userGoal = userGoalRepository.getByUserAccountId(userAccount.getId());
     if(userGoal== null){
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(0.0 , HttpStatus.OK);
     }
     SportPlan sportPlan = sportPlanRepository.getByUserGoal(userGoal);
     double percent = plannedExerciseService.getUserExerciseProgress(sportPlan.getId());
