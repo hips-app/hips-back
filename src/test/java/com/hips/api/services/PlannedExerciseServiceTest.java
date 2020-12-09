@@ -17,4 +17,5 @@ class PlannedExerciseServiceTest {
     double expected = plannedExerciseService.getUserExerciseProgress(1);
     Assertions.assertEquals(percent, expected);
   }*/
+  
 }
